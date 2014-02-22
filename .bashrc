@@ -175,11 +175,12 @@ alias cp="cp -i"
 set -o noclobber
 
 # 2.2) Listing, directories, and motion
-alias ll="ls -alrtF --color"
+# alias ll="ls -alrtF --color"
+alias ll="ls -hal |more"
 alias la="ls -A"
 alias l="ls -CF"
-alias dir='ls --color=auto --format=vertical'
-alias vdir='ls --color=auto --format=long'
+alias dir='ls'
+alias dr="ls -hal |more"
 alias m='less'
 alias ..='cd ..'
 alias ...='cd ..;cd ..'
@@ -206,7 +207,7 @@ export LC_ALL=POSIX
 
 # 2.6) Install rlwrap if not present
 # http://stackoverflow.com/a/677212
-command -v rlwrap >/dev/null 2>&1 || { echo >&2 "Install rlwrap to use node: sudo apt-get install -y rlwrap";}
+# command -v rlwrap >/dev/null 2>&1 || { echo >&2 "Install rlwrap to use node: sudo apt-get install -y rlwrap";}
 
 # 2.7) node.js and nvm
 # http://nodejs.org/api/repl.html#repl_repl
@@ -224,4 +225,4 @@ fi
 ## ------------------------------
 
 ## Define any user-specific variables you want here.
-source ~/.bashrc_custom
+source ~/.bashrc_local

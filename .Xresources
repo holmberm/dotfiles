@@ -1,0 +1,67 @@
+! Defaults for all xterm clients
+XTerm*Foreground:	snow2
+XTerm*Background:	black
+!XTerm*Geometry:		80x24
+!XTerm*eightBitInput:    true
+!XTerm*utf8: 1
+XTerm*eightBitInput: false
+XTerm*eightBitControl: false
+XTerm*eightBitOutput: true
+!XTerm*Font:		7x14
+!XTerm.Font:             Courier
+
+! Specific xterms
+!xterm-1*Geometry:	80x24+10-20
+!xterm-1*IconName:	Xterm (L)
+!xterm-1*CursorColor:	goldenrod
+! xterm-1*title:	"$HOST (L)" ! obra...
+
+
+!xterm-2*Geometry:	80x24-10-20
+!xterm-2*CursorColor:	goldenrod
+!xterm-2*sticky:		true ! verkar inte funka
+!xterm-2*highlight:	red
+!xterm-2*IconName:	Xterm (R)
+
+! Defaults for Eterms
+! Eterm*scrollbar_width:	0
+!Eterm*Foreground:	red
+!Eterm*geometry:		110x30
+
+! Defaults for urxwt
+URxvt.foreground:	snow2
+URxvt.background:	black
+URxvt.scrollBar:	false
+URxvt.fading:		30
+URxvt.transparent:	true
+URxvt.shading:		60
+!URxvt*font:             xft:Bitstream Vera Sans Mono:style=Regular:pixelsize=14
+
+! And for aterm
+Aterm.scrollBar:	false
+Aterm.fading:		70
+
+! Defaults for xbuffy
+xbuffy*BackGround:	snow3
+xbuffy*ForeGround:	black
+xbuffy*Geometry:	+480+0
+
+! Defaults for emacs
+Emacs*Background:	black
+Emacs*Foreground:	snow2
+!Emacs.font:              LucidaTypewriter-9
+! Emacs.font:            Helvetica-9
+! Emacs.font:            Terminal
+!!!Emacs.font:           Fixed
+!!!Emacs.font:           Lucida
+! Emacs.font:            Times
+! Emacs.font:            Liberation Mono !!! not working
+! Emacs.font:            Courier
+!!Emacs.font:            Luxi Mono
+!!Emacs.font:            Cursor
+!!Emacs.font:            Andale Mono
+!!Emacs.font:            Courier 10 Pitch
+!!Emacs.font:            Nimbus Mono
+!!Emacs.font:            Courier New
+!!Emacs.font:            Liberation Sans
+!!Emacs.font:            Nimbus Sans

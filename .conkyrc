@@ -1,0 +1,27 @@
+background no
+out_to_console yes
+own_window no
+out_to_x no
+update_interval 5.0
+total_run_times 0
+uppercase no
+#use_spacer yes
+
+TEXT
+$time - RAM:$memperc% - CPU:$cpu%, $freq MHz, $acpitemp C - Battery:${smapi bat 0 state} ${smapi_bat_perc 0}% ${battery_time BAT0}
+#$time - RAM:$memperc% - CPU:$cpu%, $freq MHz, $acpitemp C - Battery:${battery_short BAT0} ${battery_time BAT0}
+
+
+#${color grey}RAM:$color $mem/$memmax - $memperc%${color grey}Battery:$color ${battery BAT1}
+
+
+#${cpubar 4} ${color grey}Frequency (in MHz):$color $freq % ${battery_bar 4 BAT1}
+# ${membar 4}
+# ${color grey}RAM Usage:$color $mem/$memmax - $memperc% ${membar 4}
+#${color grey}Swap:$color $swap/$swapmax - $swapperc%
+# ${swapbar 4}
+# ${color grey}Swap Usage:$color $swap/$swapmax - $swapperc% ${swapbar 4}
+#${color grey}CPU:$color $cpu% 
+#${color grey}CPU Temp:$color $acpitemp
+#${color grey}Processes:$color $processes  ${color grey}Running:$color $running_processes
+#${color grey}Battery:$color ${battery BAT1}
