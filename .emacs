@@ -4,7 +4,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(cdlatex-simplify-sub-super-scripts nil)
- '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "fc6e906a0e6ead5747ab2e7c5838166f7350b958d82e410257aeeb2820e8a07a" "36a309985a0f9ed1a0c3a69625802f87dee940767c9e200b89cdebdb737e5b29" default)))
  '(inhibit-startup-screen t)
  '(org-clock-idle-time 10))
 (custom-set-faces
@@ -12,24 +11,36 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(mode-line ((t (:background "black" :foreground "#8fb28f" :box -1))))
- '(mode-line-inactive ((t (:inherit mode-line :background "#383838" :foreground "#5f7f5f" :box -1 :weight light)))))
+ )
 ;; END OF CUSTOM
 
 ;; --------------------------------------------------------------------------------
 ;; interface tinkering and general setup
 ;; --------------------------------------------------------------------------------
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
-;; (add-to-list 'package-archives
-;;   '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 (tool-bar-mode 0)
 (scroll-bar-mode 0)
 (column-number-mode 1)
 (menu-bar-mode 0)
 (show-paren-mode 1)
+
+;; Packages
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+(package-initialize)
+
+;; Looks
+(require 'color-theme)
+(eval-after-load "color-theme"
+  '(progn
+     (color-theme-initialize)
+     (color-theme-hober)))
+;; install with M-x package-install zenburn-theme etc.
+(load-theme 'solarized-dark t)
+;; (load-theme 'solarized-light t)
+;; (load-theme 'zenburn t)
+(set-default-font "Terminus-14")
 
 ;; use 'y' or 'n' instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -43,23 +54,14 @@
 ;; let *grep* mess with this buffer, not others
 (add-to-list 'same-window-buffer-names "*grep*")
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/") 
-;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/zenburn-theme-20130215.1443")
+(set-face-attribute 'default nil :height 110)
+;; (set-face-attribute 'default nil :height 100)
 
-;; theme
-;; install with M-x package-install zenburn-theme
-;; or rather copy the code from x220...
-(load-theme 'zenburn t)
-;; (load-theme 'solarized-light t)
-
-;; (set-face-attribute 'default nil :height 110)
-(set-face-attribute 'default nil :height 100)
-
-(add-to-list 'load-path "/home/mattias/.emacs.d")
-(require 'sticky-windows)
-(global-set-key [(control x) (?0)] 'sticky-window-delete-window)
-(global-set-key [(control x) (?1)] 'sticky-window-delete-other-windows)
-(global-set-key [(control x) (?9)] 'sticky-window-keep-window-visible)
+;; (add-to-list 'load-path "/home/mattias/.emacs.d")
+;; (require 'sticky-windows)
+;; (global-set-key [(control x) (?0)] 'sticky-window-delete-window)
+;; (global-set-key [(control x) (?1)] 'sticky-window-delete-other-windows)
+;; (global-set-key [(control x) (?9)] 'sticky-window-keep-window-visible)
 
 ;; ;; colors
 ;; (cond ((fboundp 'global-font-lock-mode)
@@ -219,8 +221,8 @@
 ;;   (doc-view-revert-buffer nil t))
 
 ;; w3m keys
-(global-set-key [C-tab] 'w3m-next-buffer)
-(global-set-key [C-iso-lefttab] 'w3m-previous-buffer)
+;; (global-set-key [C-tab] 'w3m-next-buffer)
+;; (global-set-key [C-iso-lefttab] 'w3m-previous-buffer)
 
 ;; really bad to set globally
 ;; (global-set-key (kbd "<next>") 'doc-view-scroll-up-or-next-page)
@@ -240,8 +242,9 @@
 (put 'narrow-to-region 'disabled nil)
 
 ;; (require 'w3m-load)
-(setq browse-url-browser-function 'w3m-browse-url)
-(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+;;(setq browse-url-browser-function 'w3m-browse-url)
+;;(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+
 ;; ;; optional keyboard short-cut
 ;; (global-set-key "\C-xm" 'browse-url-at-point)
 
@@ -303,3 +306,4 @@
 ;; than on freebsd. .emacs_local anybody?
 (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
 (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+

@@ -22,7 +22,7 @@ main = do
   bar2 <- spawnPipe "conky -c ~/.conkyrc | dzen2 -ta r -h 12 -x 600 -bg black"
   statuspipe <- spawnPipe "dzen2 -bg black -fg white -ta l -h 12 -w 600"
   xmonad $ defaultConfig {
-               terminal             = "urxvt"
+               terminal             = "terminology"
              , normalBorderColor    = "black"
              , focusedBorderColor   = "green"
              , focusFollowsMouse    = False
@@ -65,12 +65,12 @@ myManageHook = composeAll
 
 
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
-    -- A submask with unmodded escape as prefix.
+    -- A submap with unmodded escape as prefix.
     [ ((0, xK_Escape), submap . M.fromList $
        [ ((0, xK_h     ), sendMessage Shrink)
        , ((0, xK_l     ), sendMessage Expand)
        -- bring up scratchpad
-       , ((0, xK_s     ), scratchpadSpawnActionTerminal "urxvt")
+       , ((0, xK_s     ), scratchpadSpawnActionTerminal "xterm")
        -- launch dmenu
        , ((0, xK_p     ), spawn "dmenu_run")
        -- close focused window
@@ -174,4 +174,4 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 
 -- Workspaces --
-myWorkspaces = ["1:main", "2:code", "3:web", "4:vm"] ++ map show [5..7] ++ ["8:ssh", "9:music"]
+myWorkspaces = ["1:main", "2:code", "3:web"] ++ map show [4..7] ++ ["8:ssh", "9:music"]
