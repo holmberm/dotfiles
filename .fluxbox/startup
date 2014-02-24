@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# fluxbox startup-script:
+#
+# Lines starting with a '#' are ignored.
+
+# Change your keymap:
+xkbcomp -w 0 /home/mattias/.Xkbmap.xkb $DISPLAY
+
+# Set default colors and stuff for apps.
+xrdb -merge .Xresources
+
+# Applications you want to run with fluxbox.
+# MAKE SURE THAT APPS THAT KEEP RUNNING HAVE AN ''&'' AT THE END.
+#
+# unclutter -idle 2 &
+conky --config=/home/mattias/.conkyrc_x
+
+# And last but not least we start fluxbox.
+# Because it is the last app you have to run it with ''exec'' before it.
+
+exec fluxbox
+# or if you want to keep a log:
+# exec fluxbox -log "/home/mattias/.fluxbox/log"

@@ -25,10 +25,16 @@
 (show-paren-mode 1)
 
 ;; Packages
+(require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
+
+;; Install missing packages
+(dolist (package '(color-theme color-theme-solarized haskell-mode))
+  (if (not (package-installed-p package))
+      (package-install package)))
 
 ;; Looks
 (require 'color-theme)
@@ -304,6 +310,7 @@
 ;; 
 ;; dired use gnuls instead of ls. We really don't want to do this other
 ;; than on freebsd. .emacs_local anybody?
-(setq ls-lisp-use-insert-directory-program t)      ;; use external ls
-(setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+
+;; (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
+;; (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
 
