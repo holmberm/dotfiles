@@ -1,0 +1,4 @@
+# local startup commands for gentoo on x220
+
+xterm &
+startfluxbox
