@@ -1187,7 +1187,11 @@ xkb_symbols "pc+us(dvorak)+inet(pc105)+terminate(ctrl_alt_bksp)" {
     key <AD11> {         [           slash,        question ] };
     key <AD12> {         [           equal,            plus ] };
     key <RTRN> {         [          Return ] };
-    key <LCTL> {         [       Control_L ] };
+    // key <LCTL> {         [       Control_L ] };
+    key <LCTL> {
+        type= "FOUR_LEVEL",
+        symbols[Group1]= [       Control_L,       Control_L,           aring,           Aring ]
+    };
     key <AC01> {
         type= "FOUR_LEVEL_ALPHABETIC",
         symbols[Group1]= [               a,               A,      adiaeresis,      Adiaeresis ]
