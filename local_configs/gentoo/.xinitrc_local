@@ -1,4 +1,7 @@
 # local startup commands for gentoo on x220
 
+# Change the keyboard layout:
+xkbcomp -w 0 ~/.myconfig/.keyconf.xkb $DISPLAY
+
 xterm &
 startfluxbox
