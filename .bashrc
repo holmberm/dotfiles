@@ -225,4 +225,7 @@ fi
 ## ------------------------------
 
 ## Define any user-specific variables you want here.
+# Keyboard layout restoration
+alias dvorak="xkbcomp -w 0 ~/.myconfig/.keyconf.linux $DISPLAY"
+
 source ~/.bashrc_local

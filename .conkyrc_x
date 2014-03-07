@@ -10,8 +10,8 @@ uppercase no
 #use_spacer yes
 
 TEXT
-#$time - RAM:$memperc% - CPU:$cpu%, $freq MHz, $acpitemp C - Battery:${smapi bat 0 state} ${smapi_bat_perc 0}% ${battery_time BAT0}
-$time - RAM:$memperc% - CPU:$cpu%, $freq MHz, $acpitemp C - Battery:${battery_short BAT0} ${battery_time BAT0}
+# $time - RAM:$memperc% - CPU:$cpu%, $freq MHz, $acpitemp C - Battery:${smapi bat 0 state} ${smapi_bat_perc 0}% ${battery_time BAT0} # smapi not working 20140307
+$time - RAM:$memperc% - CPU:$cpu%, $freq MHz, $acpitemp C - Battery:${battery_short BAT0} ${battery_time BAT0} - Swap: $swapperc%#$swap/$swapmax
 
 
 #${color grey}RAM:$color $mem/$memmax - $memperc%${color grey}Battery:$color ${battery BAT1}
