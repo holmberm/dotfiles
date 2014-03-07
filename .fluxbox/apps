@@ -2,3 +2,12 @@
   [Position]	(WINCENTER)	{0 0}
   [Layer]	{2}
 [end]
+[app] (name=opera)
+      [Workspace]       {1}
+[end]
+[app] (title=winXP.*)
+      [Workspace]       {2}
+[end]
+[app] (title=freebsd10.*)
+      [Workspace]       {3}
+[end]
