@@ -8,6 +8,9 @@
 [app] (title=winXP.*)
       [Workspace]       {2}
 [end]
+[app] (title=win2008.*)
+      [Workspace]       {2}
+[end]
 [app] (title=freebsd10.*)
       [Workspace]       {3}
 [end]

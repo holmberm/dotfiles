@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Man-width 80)
  '(cdlatex-simplify-sub-super-scripts nil)
  '(inhibit-startup-screen t)
  '(org-clock-idle-time 10))
@@ -98,7 +99,7 @@
 ;; --------------------------------------------------------------------------------
 ;; org mode
 ;; --------------------------------------------------------------------------------
-(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 (setq org-startup-indented t)
 ;; (add-to-list 'load-path "/home/mattias/.emacs.d/elpa/cdlatex-4.0")
 ;; (add-to-list 'load-path "/home/mattias/.emacs.d/elpa")

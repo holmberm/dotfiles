@@ -5,7 +5,8 @@
 # Lines starting with a '#' are ignored.
 
 # Change your keymap:
-xkbcomp -w 0 ~/.myconfig/.keyconf.linux $DISPLAY
+# xkbcomp -w 0 ~/.myconfig/.keyconf.linux $DISPLAY
+setxkbmap us
 
 # Set default colors and stuff for apps.
 xrdb -merge .Xresources
