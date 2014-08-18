@@ -5,7 +5,9 @@
  ;; If there is more than one, they won't work right.
  '(cdlatex-simplify-sub-super-scripts nil)
  '(inhibit-startup-screen t)
- '(org-clock-idle-time 10))
+ '(org-CUA-compatible nil)
+ '(org-clock-idle-time 10)
+ '(shift-select-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -32,20 +34,37 @@
 (package-initialize)
 
 ;; Install missing packages
-(dolist (package '(color-theme color-theme-solarized haskell-mode))
+(dolist (package '(color-theme color-theme-solarized ergoemacs-mode haskell-mode))
   (if (not (package-installed-p package))
       (package-install package)))
 
 ;; Looks
 (require 'color-theme)
-(eval-after-load "color-theme"
-  '(progn
-     (color-theme-initialize)
-     (color-theme-hober)))
+;; (eval-after-load "color-theme"
+;;   '(progn
+;;      (color-theme-initialize)
+;;      (color-theme-hober)))
+
+(color-theme-initialize)
 ;; install with M-x package-install zenburn-theme etc.
-(load-theme 'solarized-dark t)
+;; (load-theme 'solarized-dark t)
 ;; (load-theme 'solarized-light t)
-;; (load-theme 'zenburn t)
+(load-theme 'zenburn t)
+
+;; Working stuff to make emacsclient use correct theme:
+
+;; (if (daemonp)
+;;     (add-hook 'after-make-frame-functions
+;;               '(lambda (f)
+;;                  (with-selected-frame f
+;;                    (when (window-system f) (color-theme-solarized-dark)))))
+;;   (color-theme-solarized-dark))
+
+(setq ergoemacs-theme nil)
+(setq ergoemacs-keyboard-layout "dv")
+(require 'ergoemacs-mode)
+(ergoemacs-mode 1)
+
 (set-default-font "Terminus-14")
 
 ;; use 'y' or 'n' instead of "yes" or "no"
@@ -179,21 +198,22 @@
 ;; is strictly reserved for individuals' own use.
 ;; --------------------------------------------------------------------------------
 
-(global-set-key (kbd "C-]") 'other-window)
-(global-set-key (kbd "C-.") 'other-window) ;; these work poorly in xterm.
+;; (global-set-key (kbd "C-]") 'other-window)
+;; (global-set-key (kbd "C-.") 'other-window) ;; these work poorly in xterm.
 ;; (global-set-key (kbd "C-o") 'other-window)
-(global-set-key (kbd "C-,") 'previous-multiframe-window)
+;; (global-set-key (kbd "C-,") 'previous-multiframe-window)
 ;; (global-set-key (kbd "C-S-o") 'previous-multiframe-window)
 
 ;;(global-set-key (kbd "C-[") 'previous-multiframe-window)
-(global-set-key (kbd "C-}") 'enlarge-window-horizontally)
-(global-set-key (kbd "C-{") 'shrink-window-horizontally)
-(global-set-key (kbd "M-}") 'enlarge-window)
-(global-set-key (kbd "M-{") 'shrink-window)
-(global-set-key (kbd "M-N") 'scroll-up-line)
-(global-set-key (kbd "M-P") 'scroll-down-line)
-;; Rebind `C-x C-b' for `buffer-menu'
-(global-set-key "\C-x\C-b" 'buffer-menu)
+;; (global-set-key (kbd "C-}") 'enlarge-window-horizontally)
+;; (global-set-key (kbd "C-{") 'shrink-window-horizontally)
+;; (global-set-key (kbd "M-}") 'enlarge-window)
+;; (global-set-key (kbd "M-{") 'shrink-window)
+;; (global-set-key (kbd "M-N") 'scroll-up-line)
+;; (global-set-key (kbd "M-P") 'scroll-down-line)
+;; ;; Rebind `C-x C-b' for `buffer-menu'
+;; (global-set-key "\C-x\C-b" 'buffer-menu)
+(global-set-key (kbd "M-;") 'comment-dwim)
 
 ;; ;; Simulate ergoemacs keys...
 ;; (global-set-key (kbd "M-I") 'previous-line)
@@ -206,8 +226,8 @@
 ;; (global-set-key (kbd "C-d") 'move-end-of-line)
 
 ;;from haskell tutorial
-(global-set-key "\M-C" 'compile)
-(global-set-key "\C-^" 'next-error)
+;; (global-set-key "\M-C" 'compile)
+;; (global-set-key "\C-^" 'next-error)
 ;; other programming stuff
 ;;(global-set-key "\C-cc" 'comment-region) ;; already bound
 (global-set-key "\C-xar" 'align-regexp)
@@ -257,6 +277,12 @@
 ;; --------------------------------------------------------------------------------
 ;; latex and text
 ;; --------------------------------------------------------------------------------
+
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
 
 ;; pdflatex?
 (setq TeX-PDF-mode t)
@@ -311,6 +337,6 @@
 ;; dired use gnuls instead of ls. We really don't want to do this other
 ;; than on freebsd. .emacs_local anybody?
 
-;; (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
-;; (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+(setq ls-lisp-use-insert-directory-program t)      ;; use external ls
+(setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
 

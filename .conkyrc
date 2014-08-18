@@ -9,7 +9,7 @@ uppercase no
 
 TEXT
 # $time - RAM:$memperc% - CPU:$cpu%, $freq MHz, $acpitemp C - Battery:${smapi bat 0 state} ${smapi_bat_perc 0}% ${battery_time BAT0}
-$time - RAM:$memperc% - CPU:$cpu% - / ${fs_used /}/${fs_size /} - Battery:${battery_short BAT0} ${battery_time BAT0}
+$time - RAM:$memperc% - CPU:$cpu% - /:${fs_used /}/${fs_size /} - Battery:${battery_short BAT0} ${battery_time BAT0}
 
 
 #${color grey}RAM:$color $mem/$memmax - $memperc%${color grey}Battery:$color ${battery BAT1}
