@@ -5,6 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(Man-width 80)
  '(cdlatex-simplify-sub-super-scripts nil)
+ '(ergoemacs-mode t)
  '(inhibit-startup-screen t)
  '(org-CUA-compatible nil)
  '(org-clock-idle-time 10)
@@ -42,10 +43,12 @@
 (set-face-attribute 'default nil :height 110)
 ;; (set-face-attribute 'default nil :height 100)
 
+;; Load custom function definitions
+(load "~/.emacs.d/custom-functions.el")
 
-;; ________________________________________________________________________________
+;; --------------------------------------------------------------------------------
 ;; General Packages
-;; 
+;; --------------------------------------------------------------------------------
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
@@ -67,12 +70,12 @@
 (load-theme 'zenburn t)
 
 ;; ErgoEmacs
-;; (setq ergoemacs-theme nil)
-;; (setq ergoemacs-keyboard-layout "dv")
+(setq ergoemacs-theme nil)
+(setq ergoemacs-keyboard-layout "dv")
 ;; (require 'ergoemacs-mode)
 ;; (ergoemacs-mode 1)
 
-(set-default-font "Terminus-14")
+(set-default-font "Terminus-12")
 
 
 ;; (add-to-list 'load-path "/home/mattias/.emacs.d")
@@ -170,6 +173,29 @@
 ;; is strictly reserved for individuals' own use.
 ;; --------------------------------------------------------------------------------
 
+;; Contol keys
+(global-set-key (kbd "C-o") 'find-file)
+(global-set-key (kbd "C-f") 'isearch-forward)
+(define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
+(global-set-key (kbd "C-s") 'save-buffer)
+(global-set-key (kbd "C-7") 'ergoemacs-select-current-line) ;would like to have
+                                        ;on fn too...
+
+;; fn keys
+(global-set-key (kbd "<f5>") 'other-window)
+(global-set-key (kbd "S-<f5>") 'mat-previous-window)
+(global-set-key (kbd "<f6>") 'kill-line)
+(global-set-key (kbd "S-<f6>") 'mat-kill-line-backward)
+(global-set-key (kbd "<f7>") 'backward-kill-word)
+(global-set-key (kbd "<f8>") 'kill-word)
+(global-set-key (kbd "<f9>") 'comment-dwim)
+(global-set-key (kbd "<f11>") 'backward-word)
+(global-set-key (kbd "<f12>") 'forward-word)
+(global-set-key (kbd "<pause>") 'comment-indent-new-line)
+(global-set-key (kbd "S-<up>") 'scroll-down-command)
+(global-set-key (kbd "S-<down>") 'scroll-up-command)
+;; shift left and right, see ergoemacs-forward-open-bracket and friends.
+
 ;; (global-set-key (kbd "C-]") 'other-window)
 ;; (global-set-key (kbd "C-.") 'other-window) ;; these work poorly in xterm.
 ;; (global-set-key (kbd "C-o") 'other-window)
@@ -185,7 +211,7 @@
 ;; (global-set-key (kbd "M-P") 'scroll-down-line)
 ;; ;; Rebind `C-x C-b' for `buffer-menu'
 ;; (global-set-key "\C-x\C-b" 'buffer-menu)
-(global-set-key (kbd "M-;") 'comment-dwim)
+;; (global-set-key (kbd "M-;") 'comment-dwim)
 
 ;; ;; Simulate ergoemacs keys...
 ;; (global-set-key (kbd "M-I") 'previous-line)
