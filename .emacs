@@ -264,7 +264,8 @@
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
 
-(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+;; (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+(add-hook 'latex-mode-hook 'visual-line-mode)
 
 (setq cdlatex-env-alist
      '(("axiom" "\\begin{axiom}\nAUTOLABEL\n?\n\\end{axiom}\n" nil)
@@ -296,7 +297,7 @@
 
 ;;text-mode
 ;; (add-hook 'TeX-mode-hook 'turn-off-auto-fill)
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
+;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
 ;;(require 'xdvi-search)
 
@@ -320,8 +321,8 @@
 ;; dired use gnuls instead of ls. We really don't want to do this other
 ;; than on freebsd. .emacs_local anybody?
 
-(setq ls-lisp-use-insert-directory-program t)      ;; use external ls
-(setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+;; (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
+;; (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
 
 ;; --------------------------------------------------------------------------------
 ;; trashcan
