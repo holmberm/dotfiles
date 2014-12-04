@@ -14,7 +14,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(mode-line ((t (:background "#2B2B2B" :foreground "#8FB28F" :box -1)))))
 ;; END OF CUSTOM
 
 ;; --------------------------------------------------------------------------------
@@ -26,7 +26,7 @@
 (column-number-mode 1)
 (menu-bar-mode 0)
 (show-paren-mode 1)
-(normal-erase-is-backspace-mode 0)      ;fix backspace in terminals (watchout for X)
+(normal-erase-is-backspace-mode 1)    ;fix backspace in terminals (watchout for X)
  
 ;; use 'y' or 'n' instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -73,7 +73,7 @@
 ;; install with M-x package-install zenburn-theme etc.
 ;; (load-theme 'solarized-dark t)
 ;; (load-theme 'solarized-light t)
-;; (load-theme 'zenburn t)
+(load-theme 'zenburn t)
 
 ;; ErgoEmacs
 (setq ergoemacs-theme nil)
@@ -321,8 +321,8 @@
 ;; dired use gnuls instead of ls. We really don't want to do this other
 ;; than on freebsd. .emacs_local anybody?
 
-;; (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
-;; (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+(setq ls-lisp-use-insert-directory-program t)      ;; use external ls
+(setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
 
 ;; --------------------------------------------------------------------------------
 ;; trashcan
