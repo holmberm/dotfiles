@@ -62,9 +62,9 @@
 (color-theme-initialize)
 
 ;; install with M-x package-install zenburn-theme etc.
-;; (load-theme 'solarized-dark t)
+(load-theme 'solarized-dark t)
 ;; (load-theme 'solarized-light t)
-(load-theme 'zenburn t)
+;; (load-theme 'zenburn t)
 
 ;; ErgoEmacs
 ;; (setq ergoemacs-theme nil)
@@ -271,8 +271,8 @@
 ;; dired use gnuls instead of ls. We really don't want to do this other
 ;; than on freebsd. .emacs_local anybody?
 
-(setq ls-lisp-use-insert-directory-program t)      ;; use external ls
-(setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+;; (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
+;; (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
 
 ;; --------------------------------------------------------------------------------
 ;; trashcan
