@@ -14,7 +14,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(mode-line ((t (:background "#2B2B2B" :foreground "#8FB28F" :box -1)))))
 ;; END OF CUSTOM
 
 ;; --------------------------------------------------------------------------------
@@ -26,6 +26,7 @@
 (column-number-mode 1)
 (menu-bar-mode 0)
 (show-paren-mode 1)
+(normal-erase-is-backspace-mode 1)    ;fix backspace in terminals (watchout for X)
  
 ;; use 'y' or 'n' instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -42,10 +43,14 @@
 (set-face-attribute 'default nil :height 110)
 ;; (set-face-attribute 'default nil :height 100)
 
+(prefer-coding-system 'utf-8) ;TODO verify that this works in linux too...
 
-;; ________________________________________________________________________________
+;; Load custom function definitions
+(load "~/.emacs.d/custom-functions.el")
+
+;; --------------------------------------------------------------------------------
 ;; General Packages
-;; 
+;; --------------------------------------------------------------------------------
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
@@ -53,7 +58,11 @@
 (package-initialize)
 
 ;; Install missing packages
-(dolist (package '(color-theme color-theme-solarized ergoemacs-mode haskell-mode))
+(dolist (package '(color-theme
+                   color-theme-solarized
+                   zenburn-theme
+                   ergoemacs-mode
+                   haskell-mode))
   (if (not (package-installed-p package))
       (package-install package)))
 
@@ -67,12 +76,12 @@
 ;; (load-theme 'zenburn t)
 
 ;; ErgoEmacs
-;; (setq ergoemacs-theme nil)
-;; (setq ergoemacs-keyboard-layout "dv")
+(setq ergoemacs-theme nil)
+(setq ergoemacs-keyboard-layout "dv")
 ;; (require 'ergoemacs-mode)
 ;; (ergoemacs-mode 1)
 
-(set-default-font "Terminus-14")
+(set-default-font "Terminus-12")
 
 
 ;; (add-to-list 'load-path "/home/mattias/.emacs.d")
@@ -80,6 +89,12 @@
 ;; (global-set-key [(control x) (?0)] 'sticky-window-delete-window)
 ;; (global-set-key [(control x) (?1)] 'sticky-window-delete-other-windows)
 ;; (global-set-key [(control x) (?9)] 'sticky-window-keep-window-visible)
+
+(require 'ido)
+(ido-mode t)
+
+(require 'undo-tree)
+(global-undo-tree-mode)
 
 ;; --------------------------------------------------------------------------------
 ;; eshell
@@ -170,32 +185,50 @@
 ;; is strictly reserved for individuals' own use.
 ;; --------------------------------------------------------------------------------
 
-;; (global-set-key (kbd "C-]") 'other-window)
-;; (global-set-key (kbd "C-.") 'other-window) ;; these work poorly in xterm.
-;; (global-set-key (kbd "C-o") 'other-window)
-;; (global-set-key (kbd "C-,") 'previous-multiframe-window)
-;; (global-set-key (kbd "C-S-o") 'previous-multiframe-window)
+;; Contol keys
+(global-set-key (kbd "C-o") 'find-file)
+(global-set-key (kbd "C-f") 'isearch-forward)
+(define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
+(global-set-key (kbd "C-s") 'save-buffer)
+;; (global-set-key (kbd "C-7") 'ergoemacs-select-current-line) ;would like to have
+                                        ;on fn too...
+(global-set-key (kbd "C-b") 'ido-switch-buffer)
+(global-set-key (kbd "C-x C-b") 'buffer-menu)
+;; Meta keys (while Meta almost never works on the ipad, ESC key chords do)
+;; Window management
+(global-set-key (kbd "M-2") 'delete-window)
+(global-set-key (kbd "M-3") 'delete-other-windows)
+(global-set-key (kbd "M-4") 'split-window-right)
+(global-set-key (kbd "M-$") 'split-window-below)
+(global-set-key (kbd "M-<") 'beginning-of-buffer)
+(global-set-key (kbd "M->") 'end-of-buffer)
+(global-set-key (kbd "M-u") 'undo-tree-undo)
+(global-set-key (kbd "M-r") 'undo-tree-redo)
 
-;;(global-set-key (kbd "C-[") 'previous-multiframe-window)
+;; fn keys
+(global-set-key (kbd "<f2>") 'comment-indent-new-line)
+(global-set-key (kbd "<f3>") 'execute-extended-command)
+(global-set-key (kbd "<f4>") 'ergoemacs-select-current-line)
+(global-set-key (kbd "<f5>") 'other-window)
+(global-set-key (kbd "S-<f5>") 'mat-previous-window)
+(global-set-key (kbd "<f6>") 'kill-line)
+(global-set-key (kbd "S-<f6>") 'mat-kill-line-backward)
+(global-set-key (kbd "<f7>") 'backward-kill-word)
+(global-set-key (kbd "<f8>") 'kill-word)
+(global-set-key (kbd "<f9>") 'comment-dwim)
+(global-set-key (kbd "<f11>") 'backward-word)
+(global-set-key (kbd "<f12>") 'forward-word)
+(global-set-key (kbd "S-<up>") 'scroll-down-command)
+(global-set-key (kbd "S-<down>") 'scroll-up-command)
+;; shift left and right, see ergoemacs-forward-open-bracket and friends.
+;; It is no use, ipad does not recognize shifted keys anyway. Maybe do something with meta?
+
 ;; (global-set-key (kbd "C-}") 'enlarge-window-horizontally)
 ;; (global-set-key (kbd "C-{") 'shrink-window-horizontally)
 ;; (global-set-key (kbd "M-}") 'enlarge-window)
 ;; (global-set-key (kbd "M-{") 'shrink-window)
 ;; (global-set-key (kbd "M-N") 'scroll-up-line)
 ;; (global-set-key (kbd "M-P") 'scroll-down-line)
-;; ;; Rebind `C-x C-b' for `buffer-menu'
-;; (global-set-key "\C-x\C-b" 'buffer-menu)
-(global-set-key (kbd "M-;") 'comment-dwim)
-
-;; ;; Simulate ergoemacs keys...
-;; (global-set-key (kbd "M-I") 'previous-line)
-;; (global-set-key (kbd "M-K") 'next-line)
-;; (global-set-key (kbd "M-J") 'backward-char)
-;; (global-set-key (kbd "M-L") 'forward-char)
-;; (global-set-key (kbd "M-S") 'other-window)
-;; (global-set-key (kbd "M-$") 'split-window-right)
-;; (global-set-key (kbd "M-4") 'split-window-below)
-;; (global-set-key (kbd "C-d") 'move-end-of-line)
 
 (global-set-key "\C-xar" 'align-regexp)
 ;; todo write function that aligns equal signs!
@@ -217,14 +250,6 @@
 ;; (global-set-key [C-tab] 'w3m-next-buffer)
 ;; (global-set-key [C-iso-lefttab] 'w3m-previous-buffer)
 
-;; (add-hook 'doc-view-mode-hook
-;;           '(lamda ()
-;;                   (define-key doc-view-mode-map "<next>"
-;;                     'doc-view-scroll-up-or-next-page)
-;;                   (define-key doc-view-mode-map "<prior>"
-;;                     'doc-view-scroll-down-or-previous-page)
-;;                   ))
-
 (put 'narrow-to-region 'disabled nil)
 
 ;; (require 'w3m-load)
@@ -239,17 +264,42 @@
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
 
-(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+;; (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+(add-hook 'latex-mode-hook 'visual-line-mode)
+
+(setq cdlatex-env-alist
+     '(("axiom" "\\begin{axiom}\nAUTOLABEL\n?\n\\end{axiom}\n" nil)
+       ("lstlisting" "\\begin{lstlisting}[style=syn?]\n\n\\end{lstlisting}\n" nil)))
+(setq cdlatex-command-alist
+ '(("axm" "Insert axiom env"   "" cdlatex-environment ("axiom") t nil)
+   ("ist" "Insert lstlisting env"   "" cdlatex-environment ("lstlisting") t nil)
+   ("sus"       "Insert a \\subsubsection{} statement"
+        "\\subsubsection{?}" cdlatex-position-cursor nil t nil)))
+
+(require 'reftex)
+;; (require 'cdlatex) ; needed?|
+(add-hook 'LaTeX-mode-hook
+	  '(lambda ()
+	    (turn-on-reftex)
+	    (turn-on-cdlatex)))
 
 ;; pdflatex?
 (setq TeX-PDF-mode t)
 
-;;tex-mode
-(add-hook 'TeX-mode-hook 'turn-off-auto-fill)
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(setq TeX-electric-escape nil)
+(setq TeX-default-macro "kvproductname")
+
+;; Ispell in windows
+
+;; (add-to-list 'exec-path "C:/Program Files (x86)/GnuWin32/Aspell/bin")
+;; (setq ispell-program-name "aspell")
+;; (require 'ispell)
+
+;;text-mode
+;; (add-hook 'TeX-mode-hook 'turn-off-auto-fill)
+;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
 ;;(require 'xdvi-search)
-;; (require 'cdlatex)
 
 ;; ispell in swedish
 ;;(setq ispell-program-name "hunspell")
@@ -277,3 +327,14 @@
 ;; --------------------------------------------------------------------------------
 ;; trashcan
 ;; --------------------------------------------------------------------------------
+;; (global-set-key (kbd "C-]") 'other-window)
+;; (global-set-key (kbd "C-.") 'other-window) ;; these work poorly in xterm.
+;; (global-set-key (kbd "C-o") 'other-window)
+;; (global-set-key (kbd "C-,") 'previous-multiframe-window)
+;; (global-set-key (kbd "C-S-o") 'previous-multiframe-window)
+
+;;(global-set-key (kbd "C-[") 'previous-multiframe-window)
+
+;; ;; Rebind `C-x C-b' for `buffer-menu'
+;; (global-set-key "\C-x\C-b" 'buffer-menu)
+;; (global-set-key (kbd "M-;") 'comment-dwim)

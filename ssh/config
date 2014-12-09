@@ -5,11 +5,17 @@ Ciphers blowfish-cbc,arcfour256,arcfour128,aes256-ctr,aes128-ctr
 Host hem
 HostName 37.123.191.50
 
-# Debian vm
-Host deb
+# Debian torrenting vm
+Host deluge
 Hostname 192.168.1.4
 Port 3022
 User mattias
+
+# Debian 7.6
+Host deb
+Hostname 192.168.1.4
+Port 4222
+#User mattias
 
 # Chalmers
 Host rem
