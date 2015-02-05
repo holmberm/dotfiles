@@ -5,6 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(Man-width 80)
  '(cdlatex-simplify-sub-super-scripts nil)
+ '(haskell-process-type (quote ghci))
  '(inhibit-startup-screen t)
  '(org-CUA-compatible nil)
  '(org-clock-idle-time 10)
@@ -14,8 +15,28 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(mode-line ((t (:background "#2B2B2B" :foreground "#8FB28F" :box -1))))
+ '(mode-line-inactive ((t (:background "#383838" :foreground "#5F7F5F" :inverse-video t :box -1)))))
 ;; END OF CUSTOM
+
+;; -----------------------------------------------------------------------------
+;; Determine what system we are on
+;; -----------------------------------------------------------------------------
+
+(setq st_freebsd nil st_linux nil st_windows nil)
+
+(cond
+ ((string-equal system-type "berkeley-unix")
+  (setq st_freebsd 1))
+ ((string-equal system-type "gnu/linux")
+  (setq st_linux 1))
+ )
+
+;; overkill to define a variable for this.
+;; (if (display-graphic-p)
+;;     (setq sys_has_x 1)
+;;   (setq sys_has_x nil))
+
 
 ;; --------------------------------------------------------------------------------
 ;; interface tinkering and general setup
@@ -26,7 +47,10 @@
 (column-number-mode 1)
 (menu-bar-mode 0)
 (show-paren-mode 1)
-(normal-erase-is-backspace-mode 0)      ;fix backspace in terminals (watchout for X)
+;; fix backspace in terminals. Testing a test
+(if (display-graphic-p)
+    (normal-erase-is-backspace-mode 1)
+  (normal-erase-is-backspace-mode 0))
  
 ;; use 'y' or 'n' instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -53,7 +77,6 @@
 ;; --------------------------------------------------------------------------------
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
@@ -61,7 +84,7 @@
 (dolist (package '(color-theme
                    color-theme-solarized
                    zenburn-theme
-                   ergoemacs-mode
+                   ;; ergoemacs-mode
                    haskell-mode))
   (if (not (package-installed-p package))
       (package-install package)))
@@ -73,11 +96,11 @@
 ;; install with M-x package-install zenburn-theme etc.
 ;; (load-theme 'solarized-dark t)
 ;; (load-theme 'solarized-light t)
-;; (load-theme 'zenburn t)
+(load-theme 'zenburn t)
 
 ;; ErgoEmacs
-(setq ergoemacs-theme nil)
-(setq ergoemacs-keyboard-layout "dv")
+;; (setq ergoemacs-theme nil)
+;; (setq ergoemacs-keyboard-layout "dv")
 ;; (require 'ergoemacs-mode)
 ;; (ergoemacs-mode 1)
 
@@ -100,6 +123,9 @@
 ;; eshell
 ;; --------------------------------------------------------------------------------
 (defalias 'ffo 'find-file-other-window)
+(defalias 'ff 'find-file)
+(defalias 'packrc 'package-refresh-contents)
+(defalias 'packi 'package-install)
 
 ;; --------------------------------------------------------------------------------
 ;; org mode
@@ -138,11 +164,53 @@
 ;; (require 'inf-haskell)
 
 (add-hook 'haskell-mode-hook 'turn-on-font-lock)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-(add-hook 'haskell-mode-hook 
-   (function
-    (lambda ()
-      (setq haskell-program-name "ghci"))))
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-hi2)
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+;; (add-hook 'haskell-mode-hook 
+;;    (function
+;;     (lambda ()
+;;       (setq haskell-program-name "ghci"))))
+
+(let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  (add-to-list 'exec-path my-cabal-path))
+
+
+
+(setq haskell-process-suggest-remove-import-lines t)
+(setq haskell-process-auto-import-loaded-modules t)
+(setq haskell-process-log t)
+(eval-after-load 'haskell-mode '(progn
+  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+  (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+  (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
+  (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+(eval-after-load 'haskell-cabal '(progn
+  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+
+;; Keys for the simpler haskell-compile
+(eval-after-load 'haskell-mode
+  '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
+(eval-after-load 'haskell-cabal
+  '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
+
+
+;; GHC mode
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+
+
+;; Ensure projects stay sandboxed
+;; (custom-set-variables '(haskell-process-type 'cabal-repl))
 
 ;; 
 ;; Python
@@ -317,24 +385,14 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 
-;; 
-;; dired use gnuls instead of ls. We really don't want to do this other
-;; than on freebsd. .emacs_local anybody?
-
-;; (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
-;; (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+;; dired use gnuls instead of ls.
+(if st_freebsd
+    (progn
+      (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
+      (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+      )
+  )
 
 ;; --------------------------------------------------------------------------------
 ;; trashcan
 ;; --------------------------------------------------------------------------------
-;; (global-set-key (kbd "C-]") 'other-window)
-;; (global-set-key (kbd "C-.") 'other-window) ;; these work poorly in xterm.
-;; (global-set-key (kbd "C-o") 'other-window)
-;; (global-set-key (kbd "C-,") 'previous-multiframe-window)
-;; (global-set-key (kbd "C-S-o") 'previous-multiframe-window)
-
-;;(global-set-key (kbd "C-[") 'previous-multiframe-window)
-
-;; ;; Rebind `C-x C-b' for `buffer-menu'
-;; (global-set-key "\C-x\C-b" 'buffer-menu)
-;; (global-set-key (kbd "M-;") 'comment-dwim)

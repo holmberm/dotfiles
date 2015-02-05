@@ -17,9 +17,10 @@ import qualified Data.Map        as M
 
 
 ----------------------------------------------------------------------
- 
+
+main :: IO ()
 main = do
-  bar2 <- spawnPipe "conky -c ~/.conkyrc | dzen2 -ta r -h 12 -x 600 -bg black"
+  _ <- spawnPipe "conky -c ~/.conkyrc | dzen2 -ta r -h 12 -x 600 -bg black"
   statuspipe <- spawnPipe "dzen2 -bg black -fg white -ta l -h 12 -w 600"
   xmonad $ defaultConfig {
                terminal             = "terminology"
@@ -31,17 +32,16 @@ main = do
              , keys                 = myKeys
              , manageHook           = manageDocks <+> scratchpadManageHookDefault
                                       <+> myManageHook <+> manageHook defaultConfig
-             , layoutHook           = avoidStruts  $ smartBorders $ layoutHook defaultConfig
+             , layoutHook           = avoidStruts  $ smartBorders
+                                      $ layoutHook defaultConfig
              -- , layoutHook           = myLayoutHook
              , logHook              = dynamicLogWithPP $ defaultPP 
                { 
-                 ppCurrent           = dzenColor "#FFFFFF" "blue"
-               , ppOutput          = hPutStrLn statuspipe
-               -- , ppVisible         = dzenColor "#8B80A8" ""
+                 ppOutput          = hPutStrLn statuspipe
+               , ppCurrent           = dzenColor "#FFFFFF" "blue"
                , ppHidden          = dzenColor "#FFFFFF" ""
-               -- , ppHiddenNoWindows = dzenColor "#4A4459" ""
                , ppLayout          = dzenColor "#6B6382" ""
-               , ppSep             = "  "
+               , ppSep             = " | "
                , ppWsSep           = " "
                , ppUrgent          = dzenColor "#0071FF" ""
                , ppTitle           = dzenColor "#AA9DCF" "". shorten 300 
@@ -50,8 +50,9 @@ main = do
                }
              }
 
-----------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
+myModMask :: KeyMask
 myModMask = mod4Mask
 
 -- try to make matlab plots/everything float
@@ -64,9 +65,12 @@ myManageHook = composeAll
 -- myLayoutHook = noBorders( Full ) |||   $  layoutHook defaultConfig
 
 
-myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
-    -- A submap with unmodded escape as prefix.
-    [ ((0, xK_Escape), submap . M.fromList $
+myKeys conf@(XConfig {XMonad.modMask = modMask}) =
+  M.fromList $
+  -- A submap with unmodded escape as prefix.
+  -- [ ((0, xK_Escape), submap . M.fromList $
+  -- Or with win key...
+  [ ((0, xK_Super_L), submap . M.fromList $
        [ ((0, xK_h     ), sendMessage Shrink)
        , ((0, xK_l     ), sendMessage Expand)
        -- bring up scratchpad
@@ -75,10 +79,14 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
        , ((0, xK_p     ), spawn "dmenu_run")
        -- close focused window
        , ((0 .|. shiftMask, xK_c     ), kill)
-       -- Move focus to the master window
-       , ((0, xK_m     ), windows W.focusMaster  )
-       -- Swap the focused window and the master window
-       , ((0, xK_Return), windows W.swapMaster)
+       , ((0, xK_m ), submap . M.fromList $
+                      [ ((0, xK_f), windows W.focusMaster )
+                      , ((0, xK_s), windows W.swapMaster )
+                      ])
+       -- -- Move focus to the master window
+       -- , ((0, xK_m     ), windows W.focusMaster  )
+       -- -- Swap the focused window and the master window
+       -- , ((0, xK_Return), windows W.swapMaster)
        -- Swap the focused window with the next window
        , ((0, xK_j     ), windows W.swapDown  )
        -- Swap the focused window with the previous window
