@@ -56,6 +56,8 @@ myModMask :: KeyMask
 myModMask = mod4Mask
 
 -- try to make matlab plots/everything float
+-- Note on finding the correct properties:
+            -- 
 myManageHook = composeAll
                [ className =? "com-mathworks-util-PostVMInit"  --> doFloat
                , title =? "Eclipse Platform " --> doFloat
