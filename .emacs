@@ -5,10 +5,30 @@
  ;; If there is more than one, they won't work right.
  '(Man-width 80)
  '(cdlatex-simplify-sub-super-scripts nil)
+ '(ergoemacs-ctl-c-or-ctl-x-delay 0.2)
+ '(ergoemacs-handle-ctl-c-or-ctl-x (quote both))
+ '(ergoemacs-ini-mode t)
+ '(ergoemacs-keyboard-layout "us" t)
+ '(ergoemacs-mode nil)
+ '(ergoemacs-smart-paste nil)
+ '(ergoemacs-theme "standard" t)
+ '(ergoemacs-theme-options nil)
+ '(ergoemacs-use-menus t)
+ '(ibuffer-default-sorting-mode (quote major-mode))
  '(inhibit-startup-screen t)
+ '(initial-scratch-message ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+")
  '(org-CUA-compatible nil)
  '(org-clock-idle-time 10)
- '(shift-select-mode nil))
+ '(org-special-ctrl-a/e nil)
+ '(org-support-shift-select nil)
+ '(scroll-error-top-bottom nil)
+ '(set-mark-command-repeat-pop nil)
+ '(shift-select-mode nil)
+ '(w3m-use-title-buffer-name t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -62,6 +82,8 @@
                    color-theme-solarized
                    zenburn-theme
                    ergoemacs-mode
+                   auctex
+                   cdlatex
                    haskell-mode))
   (if (not (package-installed-p package))
       (package-install package)))
@@ -77,7 +99,7 @@
 
 ;; ErgoEmacs
 (setq ergoemacs-theme nil)
-(setq ergoemacs-keyboard-layout "dv")
+(setq ergoemacs-keyboard-layout "us")
 ;; (require 'ergoemacs-mode)
 ;; (ergoemacs-mode 1)
 
@@ -100,6 +122,8 @@
 ;; eshell
 ;; --------------------------------------------------------------------------------
 (defalias 'ffo 'find-file-other-window)
+(defalias 'ff 'find-file)
+(defalias 'vlm 'visual-line-mode)
 
 ;; --------------------------------------------------------------------------------
 ;; org mode
@@ -143,6 +167,55 @@
    (function
     (lambda ()
       (setq haskell-program-name "ghci"))))
+
+(let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  (add-to-list 'exec-path my-cabal-path))
+
+;; (haskell-process-suggest-remove-import-lines t)
+;; (haskell-process-auto-import-loaded-modules t)
+;; (haskell-process-log t)
+(eval-after-load 'haskell-mode 
+  '(progn
+     (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+     (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+     (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+     (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+     (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+     (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
+     (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+(eval-after-load 'haskell-cabal '(progn
+  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+
+;; (custom-set-variables '(haskell-process-type 'cabal-repl))
+
+;; (let ((my-ghc-path (expand-file-name "/chalmers/sw/unsup64/ghc-7.8.3/bin")))
+;;   (setenv @
+
+(eval-after-load "align"
+  '(add-to-list 'align-rules-list
+                '(haskell-types
+                   (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
+                   (modes quote (haskell-mode literate-haskell-mode)))))
+(eval-after-load "align"
+  '(add-to-list 'align-rules-list
+                '(haskell-assignment
+                  (regexp . "\\(\\s-+\\)=\\s-+")
+                  (modes quote (haskell-mode literate-haskell-mode)))))
+(eval-after-load "align"
+  '(add-to-list 'align-rules-list
+                '(haskell-arrows
+                  (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
+                  (modes quote (haskell-mode literate-haskell-mode)))))
+(eval-after-load "align"
+  '(add-to-list 'align-rules-list
+                '(haskell-left-arrows
+                  (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
+                  (modes quote (haskell-mode literate-haskell-mode)))))
+
 
 ;; 
 ;; Python
@@ -193,7 +266,7 @@
 ;; (global-set-key (kbd "C-7") 'ergoemacs-select-current-line) ;would like to have
                                         ;on fn too...
 (global-set-key (kbd "C-b") 'ido-switch-buffer)
-(global-set-key (kbd "C-x C-b") 'buffer-menu)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 ;; Meta keys (while Meta almost never works on the ipad, ESC key chords do)
 ;; Window management
 (global-set-key (kbd "M-2") 'delete-window)
@@ -204,6 +277,9 @@
 (global-set-key (kbd "M->") 'end-of-buffer)
 (global-set-key (kbd "M-u") 'undo-tree-undo)
 (global-set-key (kbd "M-r") 'undo-tree-redo)
+;; Mystery follows:
+(global-set-key (kbd "ESC <up>") 'scroll-down-command)
+(global-set-key (kbd "ESC <down>") 'scroll-up-command)
 
 ;; fn keys
 (global-set-key (kbd "<f2>") 'comment-indent-new-line)
@@ -264,8 +340,8 @@
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
 
-;; (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-(add-hook 'latex-mode-hook 'visual-line-mode)
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+;; (add-hook 'latex-mode-hook 'visual-line-mode)
 
 (setq cdlatex-env-alist
      '(("axiom" "\\begin{axiom}\nAUTOLABEL\n?\n\\end{axiom}\n" nil)
@@ -287,13 +363,21 @@
 (setq TeX-PDF-mode t)
 
 (setq TeX-electric-escape nil)
-(setq TeX-default-macro "kvproductname")
+(setq TeX-default-macro "todo")
 
 ;; Ispell in windows
 
 ;; (add-to-list 'exec-path "C:/Program Files (x86)/GnuWin32/Aspell/bin")
 ;; (setq ispell-program-name "aspell")
-;; (require 'ispell)
+(require 'rw-language-and-country-codes)
+(require 'rw-ispell)
+(require 'rw-hunspell)
+;; (setq ispell-dictionary "en_US_hunspell")
+
+(setq ispell-program-name "hunspell")
+(require 'ispell)
+
+
 
 ;;text-mode
 ;; (add-hook 'TeX-mode-hook 'turn-off-auto-fill)
@@ -323,6 +407,54 @@
 
 ;; (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
 ;; (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+
+;; ------------------------------------------------------------------------------
+;; w3m
+;; ------------------------------------------------------------------------------
+(setq w3m-use-cookies 1)                ;needed for gmail and such
+
+;; (require 'w3m-session)
+
+(add-hook 'w3m-mode-hook 
+          (lambda () 
+            ;; (define-key w3m-mode-map (kbd "C-x b") nil)
+            (define-key w3m-mode-map (kbd "<up>") nil)
+            (define-key w3m-mode-map (kbd "<down>") nil)
+            (define-key w3m-mode-map (kbd "<left>") nil)
+            (define-key w3m-mode-map (kbd "<right>") nil)
+            (define-key w3m-mode-map (kbd "C-c C-f") 'w3m-lnum-follow)
+            ))
+
+;; ------------------------------------------------------------------------------
+;; gnus
+;; ------------------------------------------------------------------------------
+
+(setq gnus-select-method 
+      '(nnmaildir "GMail" 
+                  (directory "~/Maildir/Gmail")
+                  (directory-files nnheader-directory-files-safe) 
+                  (get-new-mail nil)))
+
+(defun my-gnus-group-list-subscribed-groups ()
+  "List all subscribed groups with or without un-read messages"
+  (interactive)
+  (gnus-group-list-all-groups 5)
+  )
+(add-hook 'gnus-group-mode-hook
+          ;; list all the subscribed groups even they contain zero un-read messages
+          (lambda () (local-set-key "o" 'my-gnus-group-list-subscribed-groups ))
+          )
+
+;; (setq gnus-select-method
+;;       '(nntp "localhost")) ; I also read news in gnus; it is copied to my local machine via **leafnode**
+
+;; (setq gnus-secondary-select-methods
+;;       '((nnmaildir "GMail" (directory "~/Maildir/Gmail")) ; grab mail from here
+;;     (nnfolder "archive"
+;;       (nnfolder-directory   "~/Documents/gnus/Mail/archive") ; where I archive sent email
+;;       (nnfolder-active-file "~/Documents/gnus/Mail/archive/active")
+;;       (nnfolder-get-new-mail nil)
+;;       (nnfolder-inhibit-expiry t))))
 
 ;; --------------------------------------------------------------------------------
 ;; trashcan
