@@ -107,9 +107,9 @@
 (color-theme-initialize)
 
 ;; install with M-x package-install zenburn-theme etc.
-;; (load-theme 'solarized-dark t)
+(load-theme 'solarized-dark t)
 ;; (load-theme 'solarized-light t)
-(load-theme 'zenburn t)
+;; (load-theme 'zenburn t)
 
 ;; ErgoEmacs
 ;; (setq ergoemacs-theme nil)

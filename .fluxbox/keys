@@ -80,7 +80,7 @@ Mod1 F11 :Fullscreen
 Mod1 space :WindowMenu
 
 # exit fluxbox
-Control Mod1 Delete :Exit
+# Control Mod1 Delete :Exit
 
 # change to previous/next workspace
 Control Mod1 Left :PrevWorkspace
