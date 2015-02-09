@@ -5,17 +5,49 @@
  ;; If there is more than one, they won't work right.
  '(Man-width 80)
  '(cdlatex-simplify-sub-super-scripts nil)
+ '(haskell-process-type (quote ghci))
+ '(ibuffer-default-sorting-mode (quote major-mode))
  '(inhibit-startup-screen t)
+ '(initial-scratch-message ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+")
  '(org-CUA-compatible nil)
  '(org-clock-idle-time 10)
- '(shift-select-mode nil))
+ '(org-special-ctrl-a/e nil)
+ '(org-support-shift-select nil)
+ '(scroll-error-top-bottom nil)
+ '(set-mark-command-repeat-pop nil)
+ '(shift-select-mode nil)
+ '(w3m-use-title-buffer-name t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(mode-line ((t (:background "#2B2B2B" :foreground "#8FB28F" :box -1)))))
+ '(mode-line ((t (:background "#2B2B2B" :foreground "#8FB28F" :box -1))))
+ '(mode-line-inactive ((t (:background "#383838" :foreground "#5F7F5F" :inverse-video t :box -1)))))
 ;; END OF CUSTOM
+
+;; -----------------------------------------------------------------------------
+;; Determine what system we are on
+;; -----------------------------------------------------------------------------
+
+(setq st_freebsd nil st_linux nil st_windows nil)
+
+(cond
+ ((string-equal system-type "berkeley-unix")
+  (setq st_freebsd 1))
+ ((string-equal system-type "gnu/linux")
+  (setq st_linux 1))
+ )
+
+;; overkill to define a variable for this.
+;; (if (display-graphic-p)
+;;     (setq sys_has_x 1)
+;;   (setq sys_has_x nil))
+
 
 ;; --------------------------------------------------------------------------------
 ;; interface tinkering and general setup
@@ -26,7 +58,10 @@
 (column-number-mode 1)
 (menu-bar-mode 0)
 (show-paren-mode 1)
-(normal-erase-is-backspace-mode 0) ;fix backspace in terminals (watchout for X)
+;; fix backspace in terminals. Testing a test
+(if (display-graphic-p)
+    (normal-erase-is-backspace-mode 1)
+  (normal-erase-is-backspace-mode 0))
  
 ;; use 'y' or 'n' instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -53,7 +88,6 @@
 ;; --------------------------------------------------------------------------------
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
@@ -61,7 +95,9 @@
 (dolist (package '(color-theme
                    color-theme-solarized
                    zenburn-theme
-                   ergoemacs-mode
+                   ;; ergoemacs-mode
+                   auctex
+                   cdlatex
                    haskell-mode))
   (if (not (package-installed-p package))
       (package-install package)))
@@ -76,8 +112,8 @@
 ;; (load-theme 'zenburn t)
 
 ;; ErgoEmacs
-(setq ergoemacs-theme nil)
-(setq ergoemacs-keyboard-layout "dv")
+;; (setq ergoemacs-theme nil)
+;; (setq ergoemacs-keyboard-layout "dv")
 ;; (require 'ergoemacs-mode)
 ;; (ergoemacs-mode 1)
 
@@ -100,6 +136,10 @@
 ;; eshell
 ;; --------------------------------------------------------------------------------
 (defalias 'ffo 'find-file-other-window)
+(defalias 'ff 'find-file)
+(defalias 'packrc 'package-refresh-contents)
+(defalias 'packi 'package-install)
+(defalias 'vlm 'visual-line-mode)
 
 ;; --------------------------------------------------------------------------------
 ;; org mode
@@ -138,11 +178,102 @@
 ;; (require 'inf-haskell)
 
 (add-hook 'haskell-mode-hook 'turn-on-font-lock)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-(add-hook 'haskell-mode-hook 
-   (function
-    (lambda ()
-      (setq haskell-program-name "ghci"))))
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-hi2)
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+;; (add-hook 'haskell-mode-hook 
+;;    (function
+;;     (lambda ()
+;;       (setq haskell-program-name "ghci"))))
+
+(let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  (add-to-list 'exec-path my-cabal-path))
+
+
+
+(setq haskell-process-suggest-remove-import-lines t)
+(setq haskell-process-auto-import-loaded-modules t)
+(setq haskell-process-log t)
+(eval-after-load 'haskell-mode '(progn
+  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+  (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+  (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
+  (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+(eval-after-load 'haskell-cabal '(progn
+  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+
+;; Keys for the simpler haskell-compile
+(eval-after-load 'haskell-mode
+  '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
+(eval-after-load 'haskell-cabal
+  '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
+
+
+;; GHC mode
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+
+
+;; Ensure projects stay sandboxed
+;; (custom-set-variables '(haskell-process-type 'cabal-repl))
+
+(let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  (add-to-list 'exec-path my-cabal-path))
+
+;; (haskell-process-suggest-remove-import-lines t)
+;; (haskell-process-auto-import-loaded-modules t)
+;; (haskell-process-log t)
+(eval-after-load 'haskell-mode 
+  '(progn
+     (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+     (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+     (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+     (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+     (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+     (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
+     (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+(eval-after-load 'haskell-cabal '(progn
+  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+
+;; (custom-set-variables '(haskell-process-type 'cabal-repl))
+
+;; (let ((my-ghc-path (expand-file-name "/chalmers/sw/unsup64/ghc-7.8.3/bin")))
+;;   (setenv @
+
+(eval-after-load "align"
+  '(add-to-list 'align-rules-list
+                '(haskell-types
+                   (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
+                   (modes quote (haskell-mode literate-haskell-mode)))))
+(eval-after-load "align"
+  '(add-to-list 'align-rules-list
+                '(haskell-assignment
+                  (regexp . "\\(\\s-+\\)=\\s-+")
+                  (modes quote (haskell-mode literate-haskell-mode)))))
+(eval-after-load "align"
+  '(add-to-list 'align-rules-list
+                '(haskell-arrows
+                  (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
+                  (modes quote (haskell-mode literate-haskell-mode)))))
+(eval-after-load "align"
+  '(add-to-list 'align-rules-list
+                '(haskell-left-arrows
+                  (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
+                  (modes quote (haskell-mode literate-haskell-mode)))))
+
 
 ;; 
 ;; Python
@@ -193,7 +324,7 @@
 ;; (global-set-key (kbd "C-7") 'ergoemacs-select-current-line) ;would like to have
                                         ;on fn too...
 (global-set-key (kbd "C-b") 'ido-switch-buffer)
-(global-set-key (kbd "C-x C-b") 'buffer-menu)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 ;; Meta keys (while Meta almost never works on the ipad, ESC key chords do)
 ;; Window management
 (global-set-key (kbd "M-2") 'delete-window)
@@ -204,6 +335,9 @@
 (global-set-key (kbd "M->") 'end-of-buffer)
 (global-set-key (kbd "M-u") 'undo-tree-undo)
 (global-set-key (kbd "M-r") 'undo-tree-redo)
+;; Mystery follows:
+(global-set-key (kbd "ESC <up>") 'scroll-down-command)
+(global-set-key (kbd "ESC <down>") 'scroll-up-command)
 
 ;; fn keys
 (global-set-key (kbd "<f2>") 'comment-indent-new-line)
@@ -264,8 +398,8 @@
 (setq TeX-parse-self t)
 (setq-default TeX-master nil)
 
-;; (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-(add-hook 'latex-mode-hook 'visual-line-mode)
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+;; (add-hook 'latex-mode-hook 'visual-line-mode)
 
 (setq cdlatex-env-alist
      '(("axiom" "\\begin{axiom}\nAUTOLABEL\n?\n\\end{axiom}\n" nil)
@@ -287,13 +421,21 @@
 (setq TeX-PDF-mode t)
 
 (setq TeX-electric-escape nil)
-(setq TeX-default-macro "kvproductname")
+(setq TeX-default-macro "todo")
 
 ;; Ispell in windows
 
 ;; (add-to-list 'exec-path "C:/Program Files (x86)/GnuWin32/Aspell/bin")
 ;; (setq ispell-program-name "aspell")
-;; (require 'ispell)
+(require 'rw-language-and-country-codes)
+(require 'rw-ispell)
+(require 'rw-hunspell)
+;; (setq ispell-dictionary "en_US_hunspell")
+
+(setq ispell-program-name "hunspell")
+(require 'ispell)
+
+
 
 ;;text-mode
 ;; (add-hook 'TeX-mode-hook 'turn-off-auto-fill)
@@ -317,24 +459,62 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 
-;; 
-;; dired use gnuls instead of ls. We really don't want to do this other
-;; than on freebsd. .emacs_local anybody?
+;; dired use gnuls instead of ls.
+(if st_freebsd
+    (progn
+      (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
+      (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+      )
+  )
 
-;; (setq ls-lisp-use-insert-directory-program t)      ;; use external ls
-;; (setq insert-directory-program "/usr/local/bin/gnuls") ;; ls program name
+;; ------------------------------------------------------------------------------
+;; w3m
+;; ------------------------------------------------------------------------------
+(setq w3m-use-cookies 1)                ;needed for gmail and such
+
+;; (require 'w3m-session)
+
+(add-hook 'w3m-mode-hook 
+          (lambda () 
+            ;; (define-key w3m-mode-map (kbd "C-x b") nil)
+            (define-key w3m-mode-map (kbd "<up>") nil)
+            (define-key w3m-mode-map (kbd "<down>") nil)
+            (define-key w3m-mode-map (kbd "<left>") nil)
+            (define-key w3m-mode-map (kbd "<right>") nil)
+            (define-key w3m-mode-map (kbd "C-c C-f") 'w3m-lnum-follow)
+            ))
+
+;; ------------------------------------------------------------------------------
+;; gnus
+;; ------------------------------------------------------------------------------
+
+(setq gnus-select-method 
+      '(nnmaildir "GMail" 
+                  (directory "~/Maildir/Gmail")
+                  (directory-files nnheader-directory-files-safe) 
+                  (get-new-mail nil)))
+
+(defun my-gnus-group-list-subscribed-groups ()
+  "List all subscribed groups with or without un-read messages"
+  (interactive)
+  (gnus-group-list-all-groups 5)
+  )
+(add-hook 'gnus-group-mode-hook
+          ;; list all the subscribed groups even they contain zero un-read messages
+          (lambda () (local-set-key "o" 'my-gnus-group-list-subscribed-groups ))
+          )
+
+;; (setq gnus-select-method
+;;       '(nntp "localhost")) ; I also read news in gnus; it is copied to my local machine via **leafnode**
+
+;; (setq gnus-secondary-select-methods
+;;       '((nnmaildir "GMail" (directory "~/Maildir/Gmail")) ; grab mail from here
+;;     (nnfolder "archive"
+;;       (nnfolder-directory   "~/Documents/gnus/Mail/archive") ; where I archive sent email
+;;       (nnfolder-active-file "~/Documents/gnus/Mail/archive/active")
+;;       (nnfolder-get-new-mail nil)
+;;       (nnfolder-inhibit-expiry t))))
 
 ;; --------------------------------------------------------------------------------
 ;; trashcan
 ;; --------------------------------------------------------------------------------
-;; (global-set-key (kbd "C-]") 'other-window)
-;; (global-set-key (kbd "C-.") 'other-window) ;; these work poorly in xterm.
-;; (global-set-key (kbd "C-o") 'other-window)
-;; (global-set-key (kbd "C-,") 'previous-multiframe-window)
-;; (global-set-key (kbd "C-S-o") 'previous-multiframe-window)
-
-;;(global-set-key (kbd "C-[") 'previous-multiframe-window)
-
-;; ;; Rebind `C-x C-b' for `buffer-menu'
-;; (global-set-key "\C-x\C-b" 'buffer-menu)
-;; (global-set-key (kbd "M-;") 'comment-dwim)
