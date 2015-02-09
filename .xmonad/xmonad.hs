@@ -56,11 +56,11 @@ myModMask :: KeyMask
 myModMask = mod4Mask
 
 -- try to make matlab plots/everything float
--- Note on finding the correct properties:
-            -- 
+-- Program for finding the correct properties: xprop
 myManageHook = composeAll
                [ className =? "com-mathworks-util-PostVMInit"  --> doFloat
                , title =? "Eclipse Platform " --> doFloat
+               , className =? "mcgui-Main" --> doFloat
                ]
 
 -- remove borders from fullscreen layouts... ehh...
