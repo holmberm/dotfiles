@@ -26,7 +26,7 @@
 (column-number-mode 1)
 (menu-bar-mode 0)
 (show-paren-mode 1)
-(normal-erase-is-backspace-mode 1)    ;fix backspace in terminals (watchout for X)
+(normal-erase-is-backspace-mode 0) ;fix backspace in terminals (watchout for X)
  
 ;; use 'y' or 'n' instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
