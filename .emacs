@@ -58,10 +58,10 @@
 (column-number-mode 1)
 (menu-bar-mode 0)
 (show-paren-mode 1)
-;; fix backspace in terminals. Testing a test
+;; fix backspace in terminals. Unstable?
 (if (display-graphic-p)
     (normal-erase-is-backspace-mode 1)
-  (normal-erase-is-backspace-mode 0))
+  (normal-erase-is-backspace-mode nil))
  
 ;; use 'y' or 'n' instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -107,9 +107,9 @@
 (color-theme-initialize)
 
 ;; install with M-x package-install zenburn-theme etc.
-(load-theme 'solarized-dark t)
+;; (load-theme 'solarized-dark t)
 ;; (load-theme 'solarized-light t)
-;; (load-theme 'zenburn t)
+(load-theme 'zenburn t)
 
 ;; ErgoEmacs
 ;; (setq ergoemacs-theme nil)
@@ -222,29 +222,7 @@
   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
   (add-to-list 'exec-path my-cabal-path))
 
-;; ;; (haskell-process-suggest-remove-import-lines t)
-;; ;; (haskell-process-auto-import-loaded-modules t)
-;; ;; (haskell-process-log t)
-;; (eval-after-load 'haskell-mode 
-;;   '(progn
-;;      (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-;;      (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-;;      (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
-;;      (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
-;;      (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-;;      (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
-;;      (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
-;; (eval-after-load 'haskell-cabal '(progn
-;;   (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-;;   (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-;;   (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-;;   (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
-
-;; (custom-set-variables '(haskell-process-type 'cabal-repl))
-
-;; (let ((my-ghc-path (expand-file-name "/chalmers/sw/unsup64/ghc-7.8.3/bin")))
-;;   (setenv @
-
+;; Haskell alignment
 (eval-after-load "align"
   '(add-to-list 'align-rules-list
                 '(haskell-types

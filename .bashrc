@@ -195,9 +195,9 @@ alias eqq='emacs -nw -Q' # No config and no X11
 export EDITOR='emacs -nw'
 export VISUAL='emacs -nw' 
 
-# 2.4) grep options
-export GREP_OPTIONS='--color=auto'
-export GREP_COLOR='1;31' # green for matches
+# 2.4) grep options. This is deprecated
+# export GREP_OPTIONS='--color=auto'
+# export GREP_COLOR='1;31' # green for matches
 
 # 2.5) sort options
 # Ensures cross-platform sorting behavior of GNU sort.
