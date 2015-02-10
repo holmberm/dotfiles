@@ -61,7 +61,7 @@
 ;; fix backspace in terminals. Unstable?
 (if (display-graphic-p)
     (normal-erase-is-backspace-mode 1)
-  (normal-erase-is-backspace-mode nil))
+  (normal-erase-is-backspace-mode 0))
  
 ;; use 'y' or 'n' instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -109,7 +109,7 @@
 ;; install with M-x package-install zenburn-theme etc.
 ;; (load-theme 'solarized-dark t)
 ;; (load-theme 'solarized-light t)
-(load-theme 'zenburn t)
+;; (load-theme 'zenburn t)
 
 ;; ErgoEmacs
 ;; (setq ergoemacs-theme nil)
