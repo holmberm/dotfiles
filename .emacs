@@ -9,8 +9,6 @@
  '(ibuffer-default-sorting-mode (quote major-mode))
  '(inhibit-startup-screen t)
  '(initial-scratch-message ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
-;; If you want to create a file, visit that file with C-x C-f,
-;; then enter the text in that file's own buffer.
 
 ")
  '(org-CUA-compatible nil)
@@ -92,12 +90,15 @@
 (package-initialize)
 
 ;; Install missing packages
-(dolist (package '(color-theme
+(dolist (package '(autopair
+                   ;; Themes
+                   color-theme
                    color-theme-solarized
                    zenburn-theme
-                   ;; ergoemacs-mode
+                   ;; TeX
                    auctex
                    cdlatex
+                   idomenu
                    haskell-mode))
   (if (not (package-installed-p package))
       (package-install package)))
@@ -106,10 +107,11 @@
 (require 'color-theme)
 (color-theme-initialize)
 
-;; install with M-x package-install zenburn-theme etc.
-;; (load-theme 'solarized-dark t)
-;; (load-theme 'solarized-light t)
-;; (load-theme 'zenburn t)
+(if (display-graphic-p)
+    ;; (load-theme 'solarized-dark t)
+    ;; (load-theme 'solarized-light t)
+    (load-theme 'zenburn t)
+  )
 
 ;; ErgoEmacs
 ;; (setq ergoemacs-theme nil)
@@ -141,6 +143,7 @@
 ;; buffer management
 (defalias 'ffo 'find-file-other-window)
 (defalias 'ff 'find-file)
+;; (defalias 'did 'dired .
 ;; package management
 (defalias 'packrc 'package-refresh-contents)
 (defalias 'packi 'package-install)
@@ -165,6 +168,12 @@
 ;; --------------------------------------------------------------------------------
 
 (autoload 'idomenu "idomenu" nil t)
+
+;; According to info page, these function calls should need lambda. Works though
+(require 'autopair)
+(add-hook 'prog-mode-hook
+          (autopair-global-mode 1)
+          (setq autopair-autowrap t))
 
 ;; 
 ;; C
@@ -323,6 +332,8 @@
 (define-key t-map (kbd "p c") 'compile)
 (define-key t-map (kbd "p l") 'hl-line-mode)
 (define-key t-map (kbd "p a") 'align)
+;; indenting
+(define-key t-map (kbd "i r") 'indent-region)
 ;; searching
 (define-key t-map (kbd "s r") 'query-replace)
 
