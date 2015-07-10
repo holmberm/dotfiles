@@ -9,8 +9,6 @@
  '(ibuffer-default-sorting-mode (quote major-mode))
  '(inhibit-startup-screen t)
  '(initial-scratch-message ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
-;; If you want to create a file, visit that file with C-x C-f,
-;; then enter the text in that file's own buffer.
 
 ")
  '(org-CUA-compatible nil)
@@ -92,14 +90,17 @@
 (package-initialize)
 
 ;; Install missing packages
-(dolist (package '(color-theme
+(dolist (package '(autopair
+                   ;; Themes
+                   color-theme
                    color-theme-solarized
                    zenburn-theme
-                   ;; ergoemacs-mode
+                   ;; TeX
                    auctex
                    cdlatex
                    magit
                    w3m
+                   idomenu
                    haskell-mode))
   (if (not (package-installed-p package))
       (package-install package)))
@@ -108,10 +109,11 @@
 (require 'color-theme)
 (color-theme-initialize)
 
-;; install with M-x package-install zenburn-theme etc.
-;; (load-theme 'solarized-dark t)
-;; (load-theme 'solarized-light t)
-;; (load-theme 'zenburn t)
+(if (display-graphic-p)
+    ;; (load-theme 'solarized-dark t)
+    ;; (load-theme 'solarized-light t)
+    (load-theme 'zenburn t)
+  )
 
 ;; ErgoEmacs
 ;; (setq ergoemacs-theme nil)
@@ -129,7 +131,9 @@
 ;; (global-set-key [(control x) (?9)] 'sticky-window-keep-window-visible)
 
 (require 'ido)
-(ido-mode t)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
 
 (require 'undo-tree)
 (global-undo-tree-mode)
@@ -137,11 +141,21 @@
 ;; --------------------------------------------------------------------------------
 ;; eshell
 ;; --------------------------------------------------------------------------------
+
+;; buffer management
 (defalias 'ffo 'find-file-other-window)
 (defalias 'ff 'find-file)
+;; (defalias 'did 'dired .
+;; package management
 (defalias 'packrc 'package-refresh-contents)
 (defalias 'packi 'package-install)
+;; minor-modes
 (defalias 'vlm 'visual-line-mode)
+;; verision control
+(defalias 'mast 'magit-status)
+;; programming
+;; (defalias 'm 'idomenu)
+
 
 ;; --------------------------------------------------------------------------------
 ;; org mode
@@ -154,6 +168,18 @@
 ;; --------------------------------------------------------------------------------
 ;; programming
 ;; --------------------------------------------------------------------------------
+
+(autoload 'idomenu "idomenu" nil t)
+
+;; According to info page, these function calls should need lambda. Works though
+(require 'autopair)
+(add-hook 'prog-mode-hook
+          (autopair-global-mode 1)
+          (setq autopair-autowrap t))
+
+(add-hook 'prog-mode-hook
+          'hl-line-mode
+          )
 
 ;; 
 ;; C
@@ -297,6 +323,27 @@
                                         ;on fn too...
 (global-set-key (kbd "C-b") 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-c i") 'idomenu) ;jump to function definition, ido style
+
+;; C-t key chords (trying out...)
+(define-prefix-command 't-map)
+(global-set-key (kbd "C-t") 't-map)
+;; files
+(define-key t-map (kbd "f f") 'find-file)
+(define-key t-map (kbd "f o") 'find-file-other-window)
+;; kill stuff
+(define-key t-map (kbd "k b") 'kill-buffer)
+;; programming
+(define-key t-map (kbd "p m") 'idomenu)
+(define-key t-map (kbd "p c") 'compile)
+(define-key t-map (kbd "p l") 'hl-line-mode)
+(define-key t-map (kbd "p a") 'align)
+;; indenting
+(define-key t-map (kbd "i r") 'indent-region)
+;; searching
+(define-key t-map (kbd "s r") 'query-replace)
+
+
 ;; Meta keys (while Meta almost never works on the ipad, ESC key chords do)
 ;; Window management
 (global-set-key (kbd "M-2") 'delete-window)
@@ -454,6 +501,7 @@
             (define-key w3m-mode-map (kbd "<left>") nil)
             (define-key w3m-mode-map (kbd "<right>") nil)
             (define-key w3m-mode-map (kbd "C-c C-f") 'w3m-lnum-follow)
+            (define-key w3m-mode-map (kbd "f") 'w3m-lnum-follow)
             ))
 
 ;; ------------------------------------------------------------------------------

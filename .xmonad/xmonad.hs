@@ -1,6 +1,7 @@
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.SetWMName
 import XMonad.Actions.CycleWS
 import XMonad.Actions.Submap
 import XMonad.Layout.NoBorders -- testing at 121031
@@ -20,33 +21,35 @@ import qualified Data.Map        as M
 
 main :: IO ()
 main = do
-  _ <- spawnPipe "conky -c ~/.conkyrc | dzen2 -ta r -h 12 -x 600 -bg black"
-  statuspipe <- spawnPipe "dzen2 -bg black -fg white -ta l -h 12 -w 600"
+  _ <- spawnPipe "conky -c ~/.conkyrc | dzen2 -fn 'Arial:size=9' -ta r -h 12 -x 600 -bg black"
+  statuspipe <- spawnPipe "dzen2 -fn 'Arial:size=9' -bg black -fg white -ta l -h 12 -w 600"
   xmonad $ defaultConfig {
-               terminal             = "terminology"
-             , normalBorderColor    = "black"
-             , focusedBorderColor   = "green"
-             , focusFollowsMouse    = False
-             , workspaces           = myWorkspaces
-             , modMask              = myModMask
-             , keys                 = myKeys
-             , manageHook           = manageDocks <+> scratchpadManageHookDefault
+               terminal           = "terminology"
+             , normalBorderColor  = "black"
+             , focusedBorderColor = "green"
+             , focusFollowsMouse  = False
+             , workspaces         = myWorkspaces
+             , modMask            = myModMask
+             , startupHook        = setWMName "LG3D"
+             , keys               = myKeys
+             , mouseBindings      = myMouseBindings
+             , manageHook         = manageDocks <+> scratchpadManageHookDefault
                                       <+> myManageHook <+> manageHook defaultConfig
-             , layoutHook           = avoidStruts  $ smartBorders
+             , layoutHook         = avoidStruts  $ smartBorders
                                       $ layoutHook defaultConfig
-             -- , layoutHook           = myLayoutHook
-             , logHook              = dynamicLogWithPP $ defaultPP 
+             -- , layoutHook      = myLayoutHook
+             , logHook            = dynamicLogWithPP $ defaultPP 
                { 
-                 ppOutput          = hPutStrLn statuspipe
-               , ppCurrent           = dzenColor "#FFFFFF" "blue"
-               , ppHidden          = dzenColor "#FFFFFF" ""
-               , ppLayout          = dzenColor "#6B6382" ""
-               , ppSep             = " | "
-               , ppWsSep           = " "
-               , ppUrgent          = dzenColor "#0071FF" ""
-               , ppTitle           = dzenColor "#AA9DCF" "". shorten 300 
+                 ppOutput  = hPutStrLn statuspipe
+               , ppCurrent = dzenColor "#FFFFFF" "#FF4500"
+               , ppHidden  = dzenColor "#FFFFFF" ""
+               , ppLayout  = dzenColor "#6B6382" ""
+               , ppSep     = "  "
+               , ppWsSep   = " "
+               , ppUrgent  = dzenColor "#0071FF" ""
+               , ppTitle   = dzenColor "#AA9DCF" "". shorten 300 
                                      . dzenEscape
-               , ppSort = fmap (.scratchpadFilterOutWorkspace) $ ppSort defaultPP
+               , ppSort    = fmap (.scratchpadFilterOutWorkspace) $ ppSort defaultPP
                }
              }
 
@@ -61,7 +64,10 @@ myManageHook = composeAll
                [ className =? "com-mathworks-util-PostVMInit"  --> doFloat
                , title =? "Eclipse Platform " --> doFloat
                , className =? "mcgui-Main" --> doFloat
+               , role =? "browser" --> doShift "3:web" 
                ]
+  where role = stringProperty "WM_WINDOW_ROLE"
+        --  <||> className =? "Firefox"
 
 -- remove borders from fullscreen layouts... ehh...
 -- myLayoutHook = noBorders( Full ) |||   $  layoutHook defaultConfig
@@ -182,6 +188,15 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
         | (i, k) <- zip (XMonad.workspaces conf) ([xK_1 .. xK_9] ++ [xK_0])
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
 
+-- Mouse bindings: default actions bound to mouse events
+myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
+ 
+    -- mod-button1, Set the window to floating mode and move by dragging
+    [ ((mod1Mask, button1), (\w -> focus w >> mouseMoveWindow w))
+ 
+    -- mod-button3, Raise the window to the top of the stack
+    , ((mod1Mask, button3), (\w -> focus w >> windows W.swapMaster))
+    ]
 
 -- Workspaces --
 myWorkspaces = ["1:main", "2:code", "3:web"] ++ map show [4..7] ++ ["8:ssh", "9:music"]
