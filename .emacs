@@ -175,6 +175,10 @@
           (autopair-global-mode 1)
           (setq autopair-autowrap t))
 
+(add-hook 'prog-mode-hook
+          'hl-line-mode
+          )
+
 ;; 
 ;; C
 ;; 

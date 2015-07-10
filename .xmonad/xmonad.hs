@@ -41,10 +41,10 @@ main = do
              , logHook            = dynamicLogWithPP $ defaultPP 
                { 
                  ppOutput  = hPutStrLn statuspipe
-               , ppCurrent = dzenColor "#FFFFFF" "blue"
+               , ppCurrent = dzenColor "#FFFFFF" "#FF4500"
                , ppHidden  = dzenColor "#FFFFFF" ""
                , ppLayout  = dzenColor "#6B6382" ""
-               , ppSep     = " | "
+               , ppSep     = "  "
                , ppWsSep   = " "
                , ppUrgent  = dzenColor "#0071FF" ""
                , ppTitle   = dzenColor "#AA9DCF" "". shorten 300 
@@ -64,7 +64,10 @@ myManageHook = composeAll
                [ className =? "com-mathworks-util-PostVMInit"  --> doFloat
                , title =? "Eclipse Platform " --> doFloat
                , className =? "mcgui-Main" --> doFloat
+               , role =? "browser" --> doShift "3:web" 
                ]
+  where role = stringProperty "WM_WINDOW_ROLE"
+        --  <||> className =? "Firefox"
 
 -- remove borders from fullscreen layouts... ehh...
 -- myLayoutHook = noBorders( Full ) |||   $  layoutHook defaultConfig
