@@ -1,67 +1,45 @@
-! Defaults for all xterm clients
-XTerm*Foreground:	snow2
-XTerm*Background:	black
-!XTerm*Geometry:		80x24
-!XTerm*eightBitInput:    true
-!XTerm*utf8: 1
-XTerm*eightBitInput: false
-XTerm*eightBitControl: false
-XTerm*eightBitOutput: true
-!XTerm*Font:		7x14
-!XTerm.Font:             Courier
+Xft.dpi: 144
 
-! Specific xterms
-!xterm-1*Geometry:	80x24+10-20
-!xterm-1*IconName:	Xterm (L)
-!xterm-1*CursorColor:	goldenrod
-! xterm-1*title:	"$HOST (L)" ! obra...
+! --------------------
+! URXVT
+! --------------------
+URxvt.font: xft:Anonymous Pro:size=16
 
+URxvt.scrollBar: false
 
-!xterm-2*Geometry:	80x24-10-20
-!xterm-2*CursorColor:	goldenrod
-!xterm-2*sticky:		true ! verkar inte funka
-!xterm-2*highlight:	red
-!xterm-2*IconName:	Xterm (R)
+! Zenburn color-scheme
+URxvt.background              :#1f1f1f
+URxvt.foreground              :#dcdccc
 
-! Defaults for Eterms
-! Eterm*scrollbar_width:	0
-!Eterm*Foreground:	red
-!Eterm*geometry:		110x30
+! black + red
+!URxvt.color0                 :#3f3f3f
+URxvt.color0                  :#1f1f1f
+URxvt.color1                  :#705050
 
-! Defaults for urxwt
-URxvt.foreground:	snow2
-URxvt.background:	black
-URxvt.scrollBar:	false
-URxvt.fading:		30
-URxvt.transparent:	true
-URxvt.shading:		60
-!URxvt*font:             xft:Bitstream Vera Sans Mono:style=Regular:pixelsize=14
+! green + yellow
+URxvt.color2                  :#60b48a
+URxvt.color3                  :#dfaf8f
 
-! And for aterm
-Aterm.scrollBar:	false
-Aterm.fading:		70
+! blue + purple
+URxvt.color4                  :#506070
+URxvt.color5                  :#dc8cc3
 
-! Defaults for xbuffy
-xbuffy*BackGround:	snow3
-xbuffy*ForeGround:	black
-xbuffy*Geometry:	+480+0
+! cyan + white
+URxvt.color6                  :#8cd0d3
+URxvt.color7                  :#dcdccc
 
-! Defaults for emacs
-Emacs*Background:	black
-Emacs*Foreground:	snow2
-!Emacs.font:              LucidaTypewriter-9
-! Emacs.font:            Helvetica-9
-! Emacs.font:            Terminal
-!!!Emacs.font:           Fixed
-!!!Emacs.font:           Lucida
-! Emacs.font:            Times
-! Emacs.font:            Liberation Mono !!! not working
-! Emacs.font:            Courier
-!!Emacs.font:            Luxi Mono
-!!Emacs.font:            Cursor
-!!Emacs.font:            Andale Mono
-!!Emacs.font:            Courier 10 Pitch
-!!Emacs.font:            Nimbus Mono
-!!Emacs.font:            Courier New
-!!Emacs.font:            Liberation Sans
-!!Emacs.font:            Nimbus Sans
+! bright-black + bright-red
+URxvt.color8                  :#709080
+URxvt.color9                  :#dca3a3
+
+! bright-green + bright-yellow
+URxvt.color10                 :#c3bf9f
+URxvt.color11                 :#f0dfaf
+
+! bright-blue + bright-purple
+URxvt.color12                 :#94bff3
+URxvt.color13                 :#ec93d3
+
+! bright-cyan + bright-white
+URxvt.color14                 :#93e0e3
+URxvt.color15                 :#ffffff
