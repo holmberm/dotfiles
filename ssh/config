@@ -1,9 +1,20 @@
 # General
-Ciphers blowfish-cbc,arcfour256,arcfour128,aes256-ctr,aes128-ctr
+# there seems to be a problem...
+#Ciphers blowfish-cbc,arcfour256,arcfour128,aes256-ctr,aes128-ctr
 
 # # HTPC
 # Host hem
 # HostName 37.123.191.50
+
+#FreeBSD guest
+Host bsd
+Hostname localhost
+Port 4222
+User mattias
+
+Host htpc
+Hostname 10.0.1.100
+User mattias
 
 # Debian torrenting vm
 Host deluge
@@ -27,7 +38,7 @@ Host pi
 HostName 192.168.1.10
 User pi
 
-Host hem
-HostName 213.64.27.30
-Port 4222
-User pi
+# Host hem
+# HostName 213.64.27.30
+# Port 4222
+# User pi

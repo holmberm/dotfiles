@@ -3,29 +3,33 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(Man-width 80)
- '(cdlatex-simplify-sub-super-scripts nil)
- '(haskell-process-type (quote ghci))
- '(ibuffer-default-sorting-mode (quote major-mode))
  '(inhibit-startup-screen t)
- '(initial-scratch-message ";; This buffer is for notes you don't want to save, and for Lisp evaluation.
-
-")
- '(org-CUA-compatible nil)
- '(org-clock-idle-time 10)
- '(org-special-ctrl-a/e nil)
- '(org-support-shift-select nil)
- '(scroll-error-top-bottom nil)
- '(set-mark-command-repeat-pop nil)
- '(shift-select-mode nil)
- '(w3m-use-title-buffer-name t))
+ '(org-agenda-files
+   (quote
+    ("~/Dropbox/org/todo.org" "~/Dropbox/org/hobbits.org" "/Users/mattias/Dropbox/org/inbox.org" "/Users/mattias/Dropbox/org/Coaching-round-two.org" "/Users/mattias/Dropbox/org/ForrestYoga.org" "/Users/mattias/Dropbox/org/Jambo.org" "/Users/mattias/Dropbox/org/breathingandstuff.org" "/Users/mattias/Dropbox/org/parenting-book.org")))
+ '(org-insert-mode-line-in-empty-file t)
+ '(org-journal-dir "~/Dropbox/org/journal/")
+ '(org-journal-file-type (quote weekly))
+ '(org-journal-find-file (quote find-file))
+ '(org-modules
+   (quote
+    (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
+ '(org-tag-alist
+   (quote
+    (("ios")
+     ("@work")
+     ("@home")
+     ("future_house")
+     ("emacs"))))
+ '(package-selected-packages
+   (quote
+    (org-pomodoro org-journal multiple-cursors haskell-mode idomenu w3m cdlatex auctex zenburn-theme color-theme-solarized color-theme magit autopair))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(mode-line ((t (:background "#2B2B2B" :foreground "#8FB28F" :box -1))))
- '(mode-line-inactive ((t (:background "#383838" :foreground "#5F7F5F" :inverse-video t :box -1)))))
+ )
 ;; END OF CUSTOM
 
 ;; -----------------------------------------------------------------------------
@@ -56,6 +60,7 @@
 (column-number-mode 1)
 (menu-bar-mode 0)
 (show-paren-mode 1)
+(global-visual-line-mode 1)
 ;; fix backspace in terminals. Unstable?
 (if (display-graphic-p)
     (normal-erase-is-backspace-mode 1)
@@ -66,6 +71,16 @@
 
 ;; backup settings. TODO rotation
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)
+
+(setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
 
 ;; prevent tab indenting
 (setq-default indent-tabs-mode nil)
@@ -81,8 +96,17 @@
 ;; Load custom function definitions
 (load "~/.emacs.d/custom-functions.el")
 
+(setq ring-bell-function
+      (lambda ()
+        (let ((orig-fg (face-foreground 'mode-line)))
+          (set-face-foreground 'mode-line "#F2804F")
+          (run-with-idle-timer 0.1 nil
+                               (lambda (fg) (set-face-foreground 'mode-line fg))
+                               orig-fg))))
+
 ;; --------------------------------------------------------------------------------
 ;; General Packages
+;; if package not found -> package-refresh-contents
 ;; --------------------------------------------------------------------------------
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -90,6 +114,7 @@
 (package-initialize)
 
 ;; Install missing packages
+;; For some reason it seems package-install needs to be invoked manually once before this works.
 (dolist (package '(autopair
                    ;; Themes
                    color-theme
@@ -99,6 +124,7 @@
                    auctex
                    cdlatex
                    magit
+                   undo-tree
                    w3m
                    idomenu
                    haskell-mode))
@@ -121,7 +147,7 @@
 ;; (require 'ergoemacs-mode)
 ;; (ergoemacs-mode 1)
 
-(set-default-font "Terminus-12")
+;; (set-default-font "Terminus-12")
 
 
 ;; (add-to-list 'load-path "/home/mattias/.emacs.d")
@@ -137,6 +163,15 @@
 
 (require 'undo-tree)
 (global-undo-tree-mode)
+
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+
+;; Windmove - move between windows with <super - arrow>
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings 'super)
+  (setq windmove-wrap-around t))
+
 
 ;; --------------------------------------------------------------------------------
 ;; eshell
@@ -155,7 +190,8 @@
 (defalias 'mast 'magit-status)
 ;; programming
 ;; (defalias 'm 'idomenu)
-
+;; Pomodoro
+(defalias 'pom 'org-pomodoro)
 
 ;; --------------------------------------------------------------------------------
 ;; org mode
@@ -164,6 +200,7 @@
 (setq org-startup-indented t)
 ;; (add-to-list 'load-path "/home/mattias/.emacs.d/elpa/cdlatex-4.0")
 ;; (add-to-list 'load-path "/home/mattias/.emacs.d/elpa")
+(require 'org-journal)
 
 ;; --------------------------------------------------------------------------------
 ;; programming
@@ -316,12 +353,12 @@
 
 ;; Contol keys
 (global-set-key (kbd "C-o") 'find-file)
-(global-set-key (kbd "C-f") 'isearch-forward)
-(define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
-(global-set-key (kbd "C-s") 'save-buffer)
+;; (global-set-key (kbd "C-f") 'isearch-forward)
+;; (define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
+;; (global-set-key (kbd "C-s") 'save-buffer)
 ;; (global-set-key (kbd "C-7") 'ergoemacs-select-current-line) ;would like to have
                                         ;on fn too...
-(global-set-key (kbd "C-b") 'ido-switch-buffer)
+;; (global-set-key (kbd "C-b") 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-c i") 'idomenu) ;jump to function definition, ido style
 
@@ -333,6 +370,8 @@
 (define-key t-map (kbd "f o") 'find-file-other-window)
 ;; kill stuff
 (define-key t-map (kbd "k b") 'kill-buffer)
+;; org mode
+(define-key t-map (kbd "o p") 'org-pomodoro)
 ;; programming
 (define-key t-map (kbd "p m") 'idomenu)
 (define-key t-map (kbd "p c") 'compile)
@@ -342,7 +381,14 @@
 (define-key t-map (kbd "i r") 'indent-region)
 ;; searching
 (define-key t-map (kbd "s r") 'query-replace)
+;; swedish characters on mac
+(define-key t-map (kbd "a") (kbd "å"))
+(define-key t-map (kbd "s") (kbd "ä"))
+(define-key t-map (kbd "d") (kbd "ö"))
 
+;;
+;; T end of the t-map
+;;
 
 ;; Meta keys (while Meta almost never works on the ipad, ESC key chords do)
 ;; Window management
@@ -388,7 +434,7 @@
 
 ;; org mode keys
 (global-set-key "\C-cl" 'org-store-link)
-;;(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 
@@ -538,3 +584,4 @@
 ;; --------------------------------------------------------------------------------
 ;; trashcan
 ;; --------------------------------------------------------------------------------
+(put 'downcase-region 'disabled nil)
