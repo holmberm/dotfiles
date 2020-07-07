@@ -29,7 +29,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(mode-line-inactive ((t (:background "#383838" :foreground "#5F7F5F" :inverse-video nil :box (:line-width 1 :color "black")))))
+ '(org-checkbox ((t (:background "#5F5F5F" :foreground "#FFFFEF" :box 1)))))
 ;; END OF CUSTOM
 
 ;; -----------------------------------------------------------------------------
@@ -125,7 +126,7 @@
                    cdlatex
                    magit
                    undo-tree
-                   w3m
+                   ;; w3m
                    idomenu
                    haskell-mode))
   (if (not (package-installed-p package))
@@ -140,6 +141,9 @@
     ;; (load-theme 'solarized-light t)
     (load-theme 'zenburn t)
   )
+
+;; Mode line
+(set-face-attribute 'mode-line nil :inverse-video t :box nil)
 
 ;; ErgoEmacs
 ;; (setq ergoemacs-theme nil)
@@ -190,8 +194,6 @@
 (defalias 'mast 'magit-status)
 ;; programming
 ;; (defalias 'm 'idomenu)
-;; Pomodoro
-(defalias 'pom 'org-pomodoro)
 
 ;; --------------------------------------------------------------------------------
 ;; org mode
@@ -245,47 +247,47 @@
 (add-hook 'haskell-mode-hook 'turn-on-font-lock)
 ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'turn-on-hi2)
-(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+;; (add-hook 'haskell-mode-hook 'turn-on-hi2)
+;; (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 ;; (add-hook 'haskell-mode-hook 
 ;;    (function
 ;;     (lambda ()
 ;;       (setq haskell-program-name "ghci"))))
 
-(setq haskell-process-suggest-remove-import-lines t)
-(setq haskell-process-auto-import-loaded-modules t)
-(setq haskell-process-log t)
-(eval-after-load 'haskell-mode '(progn
-  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-  (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
-  (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
-  (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
-  (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
-(eval-after-load 'haskell-cabal '(progn
-  (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-  (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-  (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-  (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+;; (setq haskell-process-suggest-remove-import-lines t)
+;; (setq haskell-process-auto-import-loaded-modules t)
+;; (setq haskell-process-log t)
+;; (eval-after-load 'haskell-mode '(progn
+;;   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+;;   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+;;   (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+;;   (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+;;   (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+;;   (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
+;;   (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+;; (eval-after-load 'haskell-cabal '(progn
+;;   (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+;;   (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+;;   (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+;;   (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
 
 ;; Keys for the simpler haskell-compile
-(eval-after-load 'haskell-mode
-  '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
-(eval-after-load 'haskell-cabal
-  '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
+;; (eval-after-load 'haskell-mode
+;;   '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
+;; (eval-after-load 'haskell-cabal
+;;   '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
 
 ;; GHC mode
-(autoload 'ghc-init "ghc" nil t)
-(autoload 'ghc-debug "ghc" nil t)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+;; (autoload 'ghc-init "ghc" nil t)
+;; (autoload 'ghc-debug "ghc" nil t)
+;; (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 
 ;; Ensure projects stay sandboxed
 ;; (custom-set-variables '(haskell-process-type 'cabal-repl))
 
-(let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
-  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
-  (add-to-list 'exec-path my-cabal-path))
+;; (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+;;   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+;;   (add-to-list 'exec-path my-cabal-path))
 
 ;; Haskell alignment
 (eval-after-load "align"
@@ -355,7 +357,7 @@
 (global-set-key (kbd "C-o") 'find-file)
 ;; (global-set-key (kbd "C-f") 'isearch-forward)
 ;; (define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
-;; (global-set-key (kbd "C-s") 'save-buffer)
+(global-set-key (kbd "s-s") 'save-buffer)
 ;; (global-set-key (kbd "C-7") 'ergoemacs-select-current-line) ;would like to have
                                         ;on fn too...
 ;; (global-set-key (kbd "C-b") 'ido-switch-buffer)
@@ -383,7 +385,9 @@
 (define-key t-map (kbd "s r") 'query-replace)
 ;; swedish characters on mac
 (define-key t-map (kbd "a") (kbd "å"))
+(define-key t-map (kbd "o") (kbd "ä"))
 (define-key t-map (kbd "s") (kbd "ä"))
+(define-key t-map (kbd "e") (kbd "ö"))
 (define-key t-map (kbd "d") (kbd "ö"))
 
 ;;
@@ -585,3 +589,4 @@
 ;; trashcan
 ;; --------------------------------------------------------------------------------
 (put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
