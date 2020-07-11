@@ -119,12 +119,13 @@
 (dolist (package '(autopair
                    ;; Themes
                    color-theme
-                   color-theme-solarized
                    zenburn-theme
                    ;; TeX
                    auctex
                    cdlatex
                    magit
+                   multiple-cursors
+                   org-journal
                    undo-tree
                    ;; w3m
                    idomenu
