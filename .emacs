@@ -4,33 +4,22 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(inhibit-startup-screen t)
- '(org-agenda-files
-   (quote
-    ("~/Dropbox/org/todo.org" "~/Dropbox/org/hobbits.org" "/Users/mattias/Dropbox/org/inbox.org" "/Users/mattias/Dropbox/org/Coaching-round-two.org" "/Users/mattias/Dropbox/org/ForrestYoga.org" "/Users/mattias/Dropbox/org/Jambo.org" "/Users/mattias/Dropbox/org/breathingandstuff.org" "/Users/mattias/Dropbox/org/parenting-book.org")))
  '(org-insert-mode-line-in-empty-file t)
  '(org-journal-dir "~/Dropbox/org/journal/")
- '(org-journal-file-type (quote weekly))
- '(org-journal-find-file (quote find-file))
+ '(org-journal-enable-agenda-integration t)
  '(org-modules
-   (quote
-    (org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m)))
- '(org-tag-alist
-   (quote
-    (("ios")
-     ("@work")
-     ("@home")
-     ("future_house")
-     ("emacs"))))
+   '(org-bbdb org-bibtex org-docview org-gnus org-habit org-info org-irc org-mhe org-rmail org-w3m))
  '(package-selected-packages
-   (quote
-    (org-pomodoro org-journal multiple-cursors haskell-mode idomenu w3m cdlatex auctex zenburn-theme color-theme-solarized color-theme magit autopair))))
+   '(org-pomodoro org-journal multiple-cursors haskell-mode idomenu w3m cdlatex auctex zenburn-theme color-theme-solarized color-theme magit autopair)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#3F3F3F" :foreground "#DCDCCC" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "nil" :family "Source Code Pro"))))
  '(mode-line-inactive ((t (:background "#383838" :foreground "#5F7F5F" :inverse-video nil :box (:line-width 1 :color "black")))))
- '(org-checkbox ((t (:background "#5F5F5F" :foreground "#FFFFEF" :box 1)))))
+ '(org-checkbox ((t (:background "#5F5F5F" :foreground "#FFFFEF" :box 1))))
+ '(org-todo ((t (:foreground "peach puff" :weight bold)))))
 ;; END OF CUSTOM
 
 ;; -----------------------------------------------------------------------------
@@ -172,9 +161,10 @@
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 
-;; Windmove - move between windows with <super - arrow>
+;; Windmove - move between windows with <alt - arrow>
+;; Switched from super because of emacsmacport 
 (when (fboundp 'windmove-default-keybindings)
-  (windmove-default-keybindings 'super)
+  (windmove-default-keybindings 'alt)
   (setq windmove-wrap-around t))
 
 
@@ -197,12 +187,47 @@
 ;; (defalias 'm 'idomenu)
 
 ;; --------------------------------------------------------------------------------
-;; org mode
+;; orgmode
 ;; --------------------------------------------------------------------------------
 ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 (setq org-startup-indented t)
 ;; (add-to-list 'load-path "/home/mattias/.emacs.d/elpa/cdlatex-4.0")
 ;; (add-to-list 'load-path "/home/mattias/.emacs.d/elpa")
+(setq org-agenda-files
+      '("~/Dropbox/org2/hobbits.org"
+        "~/Dropbox/org/inbox.org"
+        "~/Dropbox/org/today.org"        
+        "~/Dropbox/org/breathingandstuff.org"))
+(setq org-tag-alist '((:startgroup . nil)
+                      ("@work" . ?w) ("@home" . ?h)
+                      (:endgroup . nil)
+                      ("ios")
+                      ("future_house")
+                      ("emacs" . ?x)
+                      ("canthurtme")
+                      ("afteraction")
+                      ("energy")
+                      ("yoga")
+                      ))
+(setq org-todo-keywords
+      '("TODO(t)" "OPEN(o)" "|" "DONE(d)" "RVST(r)"))
+;; org journal
+(setq org-journal-dir "~/Dropbox/org/journal/")
+(setq org-journal-file-type 'weekly)
+(setq org-journal-find-file 'find-file)
+(setq org-journal-time-format "")
+;; Emacs just uses org-tag-alist anyway. Fuck it
+;; (setq org-journal-tag-alist '((:startgroup . nil)
+;;                               ("@work" . ?w) ("@home" . ?h)
+;;                               (:endgroup . nil)
+;;                               ("ios" . ?i)
+;;                               ("future_house")
+;;                               ("emacs" . ?x)
+;;                               ("canthurtme" . ?c)
+;;                               ("afteraction" .?a)
+;;                               ("energy" . ?e)
+;;                               ("skistar" . ?s)
+;;                               )) 
 (require 'org-journal)
 
 ;; --------------------------------------------------------------------------------
@@ -233,118 +258,18 @@
 (setq auto-mode-alist
       (append auto-mode-alist
               '(("\\.[hg]s$"  . haskell-mode)
-                ("\\.hic?$"     . haskell-mode)
-                ("\\.hsc$"     . haskell-mode)
-                ("\\.chs$"    . haskell-mode)
                 ("\\.l[hg]s$" . literate-haskell-mode))))
 (autoload 'haskell-mode "haskell-mode"
    "Major mode for editing Haskell scripts." t)
 (autoload 'literate-haskell-mode "haskell-mode"
    "Major mode for editing literate Haskell scripts." t)
 
-;adding the following lines according to which modules you want to use:
-;; (require 'inf-haskell)
-
-(add-hook 'haskell-mode-hook 'turn-on-font-lock)
-;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-;; (add-hook 'haskell-mode-hook 'turn-on-hi2)
-;; (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-;; (add-hook 'haskell-mode-hook 
-;;    (function
-;;     (lambda ()
-;;       (setq haskell-program-name "ghci"))))
-
-;; (setq haskell-process-suggest-remove-import-lines t)
-;; (setq haskell-process-auto-import-loaded-modules t)
-;; (setq haskell-process-log t)
-;; (eval-after-load 'haskell-mode '(progn
-;;   (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-;;   (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-;;   (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
-;;   (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
-;;   (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-;;   (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
-;;   (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
-;; (eval-after-load 'haskell-cabal '(progn
-;;   (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-;;   (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
-;;   (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-;;   (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
-
-;; Keys for the simpler haskell-compile
-;; (eval-after-load 'haskell-mode
-;;   '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
-;; (eval-after-load 'haskell-cabal
-;;   '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
-
-;; GHC mode
-;; (autoload 'ghc-init "ghc" nil t)
-;; (autoload 'ghc-debug "ghc" nil t)
-;; (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
-
-;; Ensure projects stay sandboxed
-;; (custom-set-variables '(haskell-process-type 'cabal-repl))
-
-;; (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
-;;   (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
-;;   (add-to-list 'exec-path my-cabal-path))
-
-;; Haskell alignment
-(eval-after-load "align"
-  '(add-to-list 'align-rules-list
-                '(haskell-types
-                   (regexp . "\\(\\s-+\\)\\(::\\|∷\\)\\s-+")
-                   (modes quote (haskell-mode literate-haskell-mode)))))
-(eval-after-load "align"
-  '(add-to-list 'align-rules-list
-                '(haskell-assignment
-                  (regexp . "\\(\\s-+\\)=\\s-+")
-                  (modes quote (haskell-mode literate-haskell-mode)))))
-(eval-after-load "align"
-  '(add-to-list 'align-rules-list
-                '(haskell-arrows
-                  (regexp . "\\(\\s-+\\)\\(->\\|→\\)\\s-+")
-                  (modes quote (haskell-mode literate-haskell-mode)))))
-(eval-after-load "align"
-  '(add-to-list 'align-rules-list
-                '(haskell-left-arrows
-                  (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
-                  (modes quote (haskell-mode literate-haskell-mode)))))
-
 
 ;; 
 ;; Python
 ;; 
-
-;; 
-;; RePy
-;; 
 (add-to-list 'auto-mode-alist '("\\.repy$" . python-mode))
 
-;; ;; 
-;; ;; multi-web-mode
-;; ;; 
-;; (require 'multi-web-mode)
-;; (setq mweb-default-major-mode 'html-mode)
-;; (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
-;;                   (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
-;;                   (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
-;; (setq mweb-filename-extensions '("php" "htm" "html" "ctp" "phtml" "php4" "php5"))
-;; (multi-web-global-mode 1)
-
-;; ;; 
-;; ;; matlab-mode
-;; ;; 
-;; (add-to-list 'load-path "/home/mattias/src/matlab-emacs/matlab-emacs")
-;; (load-library "matlab-load")
-
-;; (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
-;; (add-to-list
-;;  'auto-mode-alist
-;;  '("\\.m$" . matlab-mode))
-;; (setq matlab-indent-function t)
-;; (setq matlab-shell-command "matlab")
 
 
 ;; --------------------------------------------------------------------------------
@@ -361,11 +286,10 @@
 (global-set-key (kbd "s-s") 'save-buffer)
 ;; (global-set-key (kbd "C-7") 'ergoemacs-select-current-line) ;would like to have
                                         ;on fn too...
-;; (global-set-key (kbd "C-b") 'ido-switch-buffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-c i") 'idomenu) ;jump to function definition, ido style
 
-;; C-t key chords (trying out...)
+;; C-t key chords 
 (define-prefix-command 't-map)
 (global-set-key (kbd "C-t") 't-map)
 ;; files
@@ -373,8 +297,10 @@
 (define-key t-map (kbd "f o") 'find-file-other-window)
 ;; kill stuff
 (define-key t-map (kbd "k b") 'kill-buffer)
-;; org mode
-(define-key t-map (kbd "o p") 'org-pomodoro)
+;; org mode G
+(define-key t-map (kbd "g p") 'org-pomodoro)
+(define-key t-map (kbd "g j") 'org-journal-new-entry)
+(define-key t-map (kbd "g s") 'org-journal-new-scheduled-entry)
 ;; programming
 (define-key t-map (kbd "p m") 'idomenu)
 (define-key t-map (kbd "p c") 'compile)
@@ -386,13 +312,17 @@
 (define-key t-map (kbd "s r") 'query-replace)
 ;; swedish characters on mac
 (define-key t-map (kbd "a") (kbd "å"))
+(define-key t-map (kbd "A") (kbd "Å"))
 (define-key t-map (kbd "o") (kbd "ä"))
-(define-key t-map (kbd "s") (kbd "ä"))
+(define-key t-map (kbd "O") (kbd "Ä"))
+;; (define-key t-map (kbd "s") (kbd "ä"))
 (define-key t-map (kbd "e") (kbd "ö"))
-(define-key t-map (kbd "d") (kbd "ö"))
-
+(define-key t-map (kbd "E") (kbd "Ö"))
+;; (define-key t-map (kbd "d") (kbd "ö"))
+;; text manipulation
+(define-key t-map (kbd "u") 'upcase-char)
 ;;
-;; T end of the t-map
+;; T end of the t-map ----------------------------------------
 ;;
 
 ;; Meta keys (while Meta almost never works on the ipad, ESC key chords do)

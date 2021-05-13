@@ -30,8 +30,9 @@ Port 4222
 
 # Chalmers
 Host rem
-HostName remote2.studat.chalmers.se
+HostName remote11.chalmers.se
 User holmberm
+
 
 # Raspberry Pi
 Host pi
